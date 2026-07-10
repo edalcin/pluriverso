@@ -8,7 +8,7 @@ Middleware de federação para o ecossistema de Conhecimento Tradicional Associa
 
 ## O que é o Pluriverso?
 
-O **Pluriverso** é o middleware de federação da [EtnoArquitetura](https://github.com/edalcin/etnoArquitetura). Ele permite que iniciativas e comunidades tradicionais completamente independentes — cada uma com sua própria infraestrutura soberana de dados — sejam acessíveis de forma integrada por pesquisadores e aplicações.
+O **Pluriverso** é o middleware de federação da [Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural). Ele permite que iniciativas e comunidades tradicionais completamente independentes — cada uma com sua própria infraestrutura soberana de dados — sejam acessíveis de forma integrada por pesquisadores e aplicações.
 
 O nome reflete o conceito filosófico e político do "pluriverso": não um universo único e centralizado, mas a coexistência de múltiplos mundos autônomos que se relacionam sem se subordinar.
 
@@ -23,19 +23,19 @@ O nome reflete o conceito filosófico e político do "pluriverso": não um unive
 ```mermaid
 graph TD
     subgraph I1["Iniciativa de Fontes Secundárias"]
-        I1A(etnoDB) --> I1M[(MongoDB)]
-        I1B(etnopapers) --> I1A
-        I1C(etnoTermos) <--> I1M
+        I1A(BioCultDB) --> I1M[(MongoDB)]
+        I1B(BioCultPapers) --> I1A
+        I1C(BioCultTermos) <--> I1M
     end
 
     subgraph C2["Comunidade Tradicional #2"]
-        C2A(etnoRelatos) --> C2M[(MongoDB)]
-        C2B(etnoTermos) <--> C2M
+        C2A(BioCultRelatos) --> C2M[(MongoDB)]
+        C2B(BioCultTermos) <--> C2M
     end
 
     subgraph C3["Comunidade Tradicional #N"]
-        C3A(etnoRelatos) --> C3M[(MongoDB)]
-        C3B(etnoTermos) <--> C3M
+        C3A(BioCultRelatos) --> C3M[(MongoDB)]
+        C3B(BioCultTermos) <--> C3M
     end
 
     PL{{"Pluriverso\nMiddleware de Federação"}}
@@ -69,7 +69,7 @@ Armazena e indexa os registros coletados para busca eficiente. O índice é uma 
 
 ### 3. Camada de Mapeamento Semântico
 
-Mantém mapeamentos SKOS entre os vocabulários (etnoTermos) dos diferentes membros:
+Mantém mapeamentos SKOS entre os vocabulários (BioCultTermos) dos diferentes membros:
 
 - `skos:exactMatch` — conceitos idênticos em membros diferentes
 - `skos:closeMatch` — conceitos muito similares
@@ -141,11 +141,11 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 
 | Componente | Relação com o Pluriverso |
 |------------|--------------------------|
-| **[etnoDB](https://github.com/edalcin/etnoDB)** | Membro da federação; expõe endpoint de harvest com registros secundários aprovados |
-| **[etnopapers](https://github.com/edalcin/etnopapers)** | Alimenta o etnoDB; sem relação direta com o Pluriverso |
-| **[etnoRelatos](https://github.com/edalcin/etnoRelatos)** | Membro da federação (por comunidade); expõe endpoint de harvest com registros primários consentidos |
-| **[etnoTermos](https://github.com/edalcin/etnotermos)** | Cada instância é soberana; Pluriverso mantém mapeamentos entre instâncias de diferentes membros |
-| **[etnoArquitetura](https://github.com/edalcin/etnoArquitetura)** | Repositório de arquitetura; documenta o Pluriverso e a federação como um todo |
+| **[BioCultDB](https://github.com/edalcin/BioCultDB)** | Membro da federação; expõe endpoint de harvest com registros secundários aprovados |
+| **[BioCultPapers](https://github.com/edalcin/BioCultPapers)** | Alimenta o BioCultDB; sem relação direta com o Pluriverso |
+| **[BioCultRelatos](https://github.com/edalcin/BioCultRelatos)** | Membro da federação (por comunidade); expõe endpoint de harvest com registros primários consentidos |
+| **[BioCultTermos](https://github.com/edalcin/BioCultTermos)** | Cada instância é soberana; Pluriverso mantém mapeamentos entre instâncias de diferentes membros |
+| **[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** | Repositório de arquitetura; documenta o Pluriverso e a federação como um todo |
 
 ---
 
@@ -153,8 +153,8 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 
 A arquitetura completa, incluindo diagramas C4, ADRs e decisões de design, está documentada em:
 
-**[etnoArquitetura](https://github.com/edalcin/etnoArquitetura)** — especialmente:
-- [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/etnoArquitetura/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
+**[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** — especialmente:
+- [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
 
 ---
 
