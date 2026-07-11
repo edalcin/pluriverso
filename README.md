@@ -23,19 +23,22 @@ O nome reflete o conceito filosófico e político do "pluriverso": não um unive
 ```mermaid
 graph TD
     subgraph I1["Iniciativa de Fontes Secundárias"]
-        I1A(BioCultDB) --> I1M[(MongoDB)]
-        I1B(BioCultPapers) --> I1A
-        I1C(BioCultTermos) <--> I1M
+        I1DB[(SQLite+JSON\nda unidade)]
+        I1A(BioCultDB) --> I1DB
+        I1B(BioCultPapers) -.exporta arquivo.-> I1A
+        I1C(BioCultTermos) <--> I1DB
     end
 
     subgraph C2["Comunidade Tradicional #2"]
-        C2A(BioCultRelatos) --> C2M[(MongoDB)]
-        C2B(BioCultTermos) <--> C2M
+        C2DB[(SQLite+JSON\nda unidade)]
+        C2A(BioCultRelatos) --> C2DB
+        C2B(BioCultTermos) <--> C2DB
     end
 
     subgraph C3["Comunidade Tradicional #N"]
-        C3A(BioCultRelatos) --> C3M[(MongoDB)]
-        C3B(BioCultTermos) <--> C3M
+        C3DB[(SQLite+JSON\nda unidade)]
+        C3A(BioCultRelatos) --> C3DB
+        C3B(BioCultTermos) <--> C3DB
     end
 
     PL{{"Pluriverso\nMiddleware de Federação"}}
@@ -65,7 +68,7 @@ O Pluriverso agenda coletas periódicas, mantém um índice central dos registro
 
 ### 2. Índice Central
 
-Armazena e indexa os registros coletados para busca eficiente. O índice é uma **cópia derivada** dos dados públicos dos membros — a fonte de verdade permanece sempre no membro.
+Armazena e indexa os registros coletados para busca eficiente, implementado em **SQLite+JSON (JSON1) + FTS5** para busca textual. O índice é uma **cópia derivada** dos dados públicos dos membros — a fonte de verdade permanece sempre no membro.
 
 ### 3. Camada de Mapeamento Semântico
 
@@ -101,7 +104,7 @@ Suporta o **Comitê Federado** — composto por representantes de cada membro �
 
 ### Soberania dos Membros
 
-O Pluriverso **nunca** acessa dados de um membro além do que o membro publica explicitamente. Não há backdoor, não há acesso direto ao MongoDB de ninguém.
+O Pluriverso **nunca** acessa dados de um membro além do que o membro publica explicitamente. Não há backdoor, não há acesso direto ao banco (SQLite) de ninguém.
 
 ### Remoção Imediata
 
@@ -122,13 +125,13 @@ Cada registro no índice carrega `member_id` permanente. O Pluriverso nunca "apa
 
 ---
 
-## Necessidades de Implementação (v3.0)
+## Necessidades de Implementação (v3.1)
 
 O Pluriverso é um **novo componente**, ainda sem implementação. As principais funcionalidades a desenvolver:
 
 - [ ] Harvest scheduler: coleta periódica configurável por membro
 - [ ] Parser do endpoint de harvest: consumir e normalizar respostas dos membros
-- [ ] Índice central: armazenamento e busca dos registros coletados
+- [ ] Índice central: armazenamento (SQLite+JSON) e busca (FTS5) dos registros coletados
 - [ ] Camada de mapeamento SKOS: CRUD de mapeamentos entre ConceptSchemes
 - [ ] Motor de busca semântica: busca expandida por mapeamentos SKOS
 - [ ] API pública REST: endpoint de consulta federada
