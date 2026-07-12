@@ -1,0 +1,31 @@
+# Node modules
+node_modules/
+
+# Environment files with sensitive data
+.env
+.env.local
+.env.*.local
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# SQLite local database (ADR-005 — federated index, never committed)
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+graphify-out/
