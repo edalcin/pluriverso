@@ -8,7 +8,7 @@ Middleware de federação para o ecossistema de Conhecimento Tradicional Associa
 
 ## O que é o Pluriverso?
 
-O **Pluriverso** é o middleware de federação da [Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural). Ele permite que iniciativas e comunidades tradicionais completamente independentes — cada uma com sua própria infraestrutura soberana de dados — sejam acessíveis de forma integrada por pesquisadores e aplicações.
+O **Pluriverso** é o middleware de federação da [Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural). Ele permite que iniciativas, comunidades tradicionais, acervos históricos/museológicos e registros de obras de naturalistas — cada um com sua própria infraestrutura soberana de dados e de vocabulário (BioCultTermos) — sejam acessíveis de forma integrada por pesquisadores e aplicações.
 
 O nome reflete o conceito filosófico e político do "pluriverso": não um universo único e centralizado, mas a coexistência de múltiplos mundos autônomos que se relacionam sem se subordinar.
 
@@ -22,31 +22,37 @@ O nome reflete o conceito filosófico e político do "pluriverso": não um unive
 
 ```mermaid
 graph TD
-    subgraph I1["Iniciativa de Fontes Secundárias"]
-        I1DB[(SQLite+JSON\nda unidade)]
-        I1A(BioCultDB) --> I1DB
-        I1B(BioCultPapers) -.exporta arquivo.-> I1A
-        I1C(BioCultTermos) <--> I1DB
+    I1P(["BioCultPapers\n(desktop, fora do container)"])
+
+    subgraph I1["Iniciativa de Fontes Secundárias — 1 container"]
+        I1A(BioCultDB) --> I1S[(SQLite+JSON)]
+        I1C(BioCultTermos) <--> I1S
     end
 
-    subgraph C2["Comunidade Tradicional #2"]
-        C2DB[(SQLite+JSON\nda unidade)]
-        C2A(BioCultRelatos) --> C2DB
-        C2B(BioCultTermos) <--> C2DB
+    I1P -.->|"exporta arquivo"| I1A
+
+    subgraph C2["Comunidade Tradicional — 1 container"]
+        C2A(BioCultRelatos) --> C2S[(SQLite+JSON)]
+        C2B(BioCultTermos) <--> C2S
     end
 
-    subgraph C3["Comunidade Tradicional #N"]
-        C3DB[(SQLite+JSON\nda unidade)]
-        C3A(BioCultRelatos) --> C3DB
-        C3B(BioCultTermos) <--> C3DB
+    subgraph AC["Acervos Históricos e Museológicos — 1 container"]
+        ACA(BioCultAcervos) --> ACS[(SQLite+JSON)]
+        ACB(BioCultTermos) <--> ACS
     end
 
-    PL{{"Pluriverso\nMiddleware de Federação"}}
+    subgraph NA["Obras de Naturalistas séc. XVII-XIX — 1 container"]
+        NAA(BioCultNaturalistas) --> NAS[(SQLite+JSON)]
+        NAB(BioCultTermos) <--> NAS
+    end
+
+    PL{{"Pluriverso\nMiddleware de Federação\n(índice + mapeamentos SKOS-XL)"}}
     U((Usuário /\nAplicação))
 
     I1 -->|harvest REST| PL
     C2 -->|harvest REST| PL
-    C3 -->|harvest REST| PL
+    AC -->|harvest REST| PL
+    NA -->|harvest REST| PL
     U <-->|API| PL
 ```
 
@@ -71,6 +77,8 @@ O Pluriverso agenda coletas periódicas, mantém um índice central dos registro
 Armazena e indexa os registros coletados para busca eficiente, implementado em **SQLite+JSON (JSON1) + FTS5** para busca textual. O índice é uma **cópia derivada** dos dados públicos dos membros — a fonte de verdade permanece sempre no membro.
 
 ### 3. Camada de Mapeamento Semântico
+
+Cada instância federada embute sua própria camada semântica — uma instância soberana do BioCultTermos, no mesmo container e arquivo SQLite do membro. O Pluriverso não hospeda nenhum vocabulário: ele **unifica** essas camadas semânticas independentes mantendo mapeamentos SKOS-XL (`skos:exactMatch`, `skos:closeMatch`, `skos:broadMatch`) entre os `ConceptScheme` de membros diferentes, aprovados pelo Comitê Federado e nunca impostos.
 
 Mantém mapeamentos SKOS entre os vocabulários (BioCultTermos) dos diferentes membros:
 
@@ -97,6 +105,16 @@ Suporta o **Comitê Federado** — composto por representantes de cada membro �
 - Contrato de publicação (campos obrigatórios do endpoint)
 - Aprovação de mapeamentos semânticos
 - Resolução de conflitos
+
+#### Fluxo de Inscrição
+
+Uma instância que já opera BioCultDB, BioCultRelatos, BioCultAcervos ou BioCultNaturalistas solicita entrada na federação pela própria interface pública do Pluriverso — sem precisar de Git ou acesso a repositório algum:
+
+1. **Cadastro self-service**: o solicitante informa nome, tipo de membro, a **URL-BASE** de sua instância, contato e uma declaração de conformidade C.A.R.E. (`POST /api/federation/membership-requests`) — o pedido nasce `pending`.
+2. **Verificação técnica automática**: o Pluriverso testa `{URL-BASE}/api/federation/records` contra o contrato de harvest (HTTPS obrigatório, bloqueio de IPs privados/loopback). O resultado é anexado ao pedido como sinal para o Comitê — nunca aprova ou rejeita sozinho.
+3. **Fila de aprovação do Comitê Federado**: só uma decisão humana move o pedido para `active` (entra no agendador de harvest) ou `rejected` (motivo registrado; solicitante pode reenviar).
+
+Admissão nunca é automática — a verificação técnica é apoio à decisão, não substituto dela. Detalhes completos (modelo de dados, estados, mitigação de SSRF) em [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md).
 
 ---
 
@@ -125,7 +143,7 @@ Cada registro no índice carrega `member_id` permanente. O Pluriverso nunca "apa
 
 ---
 
-## Necessidades de Implementação (v3.1)
+## Necessidades de Implementação (v3.2)
 
 O Pluriverso é um **novo componente**, ainda sem implementação. As principais funcionalidades a desenvolver:
 
@@ -137,6 +155,9 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 - [ ] API pública REST: endpoint de consulta federada
 - [ ] `purge_by_member`: remoção completa de um membro do índice
 - [ ] Interface de governança: painel para o Comitê Federado
+- [ ] Endpoint `POST /api/federation/membership-requests`: cadastro self-service de novos membros
+- [ ] Probe de verificação técnica (anti-SSRF) sobre a URL-BASE informada no cadastro
+- [ ] Fila de aprovação (`GET`/`PATCH /api/federation/membership-requests`) para o Comitê Federado decidir
 
 ---
 
@@ -148,6 +169,8 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 | **[BioCultPapers](https://github.com/edalcin/BioCultPapers)** | Alimenta o BioCultDB; sem relação direta com o Pluriverso |
 | **[BioCultRelatos](https://github.com/edalcin/BioCultRelatos)** | Membro da federação (por comunidade); expõe endpoint de harvest com registros primários consentidos |
 | **[BioCultTermos](https://github.com/edalcin/BioCultTermos)** | Cada instância é soberana; Pluriverso mantém mapeamentos entre instâncias de diferentes membros |
+| **[BioCultAcervos](https://github.com/edalcin/BioCultAcervos)** | Membro da federação (Acervos Históricos e Museológicos); embute sua própria instância soberana do BioCultTermos e expõe endpoint de harvest — projeto em fase inicial |
+| **[BioCultNaturalistas](https://github.com/edalcin/BioCultNaturalistas)** | Membro da federação (Obras de Naturalistas séc. XVII–XIX); embute sua própria instância soberana do BioCultTermos e expõe endpoint de harvest — projeto em fase inicial |
 | **[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** | Repositório de arquitetura; documenta o Pluriverso e a federação como um todo |
 
 ---
@@ -156,8 +179,10 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 
 A arquitetura completa, incluindo diagramas C4, ADRs e decisões de design, está documentada em:
 
-**[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** — especialmente:
+**[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** (v3.2) — especialmente:
 - [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
+- [ADR-005: Persistência SQLite com JSON](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md)
+- [ADR-006: Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
 
 ---
 
