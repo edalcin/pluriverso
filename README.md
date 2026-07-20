@@ -74,7 +74,11 @@ O Pluriverso agenda coletas periódicas, mantém um índice central dos registro
 
 ### 2. Índice Central
 
-Armazena e indexa os registros coletados para busca eficiente, implementado em **SQLite+JSON (JSON1) + FTS5** para busca textual. O índice é uma **cópia derivada** dos dados públicos dos membros — a fonte de verdade permanece sempre no membro.
+Armazena e indexa os registros coletados para busca eficiente, implementado em **SQLite embutida via
+`better-sqlite3`** (JSON1 + FTS5), com arquivo único externo ao container via `SQLITE_DB_PATH` (default
+`/data/pluriverso.sqlite`), em modo WAL, no mesmo container da aplicação. O índice é uma **cópia derivada**
+dos dados públicos dos membros — a fonte de verdade permanece sempre no membro. Detalhes em
+[ADR-008](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md).
 
 ### 3. Camada de Mapeamento Semântico
 
@@ -116,6 +120,20 @@ Uma instância que já opera BioCultDB, BioCultRelatos, BioCultAcervos ou BioCul
 
 Admissão nunca é automática — a verificação técnica é apoio à decisão, não substituto dela. Detalhes completos (modelo de dados, estados, mitigação de SSRF) em [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md).
 
+### Múltiplas Instâncias
+
+O Pluriverso é **instanciável**, não singleton: uma associação de comunidades tradicionais que opera vários
+`BioCultRelatos` pode rodar sua própria instância do Pluriverso, federando apenas os dados das suas
+comunidades, sem depender do Pluriverso público global. Pontos-chave:
+
+- Cada instância = 1 container + 1 arquivo SQLite próprio (ADR-008)
+- Membership e `member_id` escopados por instância — sem registro global de identidade entre instâncias
+- Um mesmo membro pode ser coletado por múltiplas instâncias simultaneamente (harvest é só leitura pública)
+- Sem hierarquia entre instâncias — cada uma tem seu próprio Comitê Federado
+- Harvest coleta apenas `visibility: public` hoje; harvest autenticado para `restricted` é extensão futura
+
+Detalhes completos em [ADR-009](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md).
+
 ---
 
 ## Princípios de Design
@@ -143,7 +161,7 @@ Cada registro no índice carrega `member_id` permanente. O Pluriverso nunca "apa
 
 ---
 
-## Necessidades de Implementação (v3.2)
+## Necessidades de Implementação (v3.3)
 
 O Pluriverso é um **novo componente**, ainda sem implementação. As principais funcionalidades a desenvolver:
 
@@ -179,10 +197,12 @@ O Pluriverso é um **novo componente**, ainda sem implementação. As principais
 
 A arquitetura completa, incluindo diagramas C4, ADRs e decisões de design, está documentada em:
 
-**[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** (v3.2) — especialmente:
+**[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** (v3.3) — especialmente:
 - [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
 - [ADR-005: Persistência SQLite com JSON](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md)
 - [ADR-006: Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
+- [ADR-008: Engine de Banco de Dados do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)
+- [ADR-009: Topologia Multi-Instância do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
 
 ---
 

@@ -8,6 +8,9 @@ Rules:
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 
-## Arquitetura v3.1 — Persistência
-Persistência = SQLite com JSON (JSON1), **um arquivo por unidade federada** compartilhado pelas ferramentas (tabelas distintas), WAL, `SQLITE_DB_PATH`. Um container por unidade. Sem MongoDB.
-Ref.: Arquitetura-BioCultural/docs/architecture-decisions/ADR-005.
+## Arquitetura v3.3 — Persistência e Topologia
+Persistência do Pluriverso = SQLite embutida via `better-sqlite3` (JSON1 + FTS5, WAL), arquivo único externo
+ao container via `SQLITE_DB_PATH` (default `/data/pluriverso.sqlite`). Ref.: ADR-008.
+Pluriverso é instanciável (não singleton): associação pode rodar instância própria, escopada aos seus
+membros, sem hierarquia entre instâncias. Ref.: ADR-009.
+Ref. gerais: Arquitetura-BioCultural/docs/architecture-decisions/ADR-005, ADR-008, ADR-009.
