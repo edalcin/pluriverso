@@ -1,0 +1,1161 @@
+openapi: 3.1.0
+info:
+  title: API do Pluriverso
+  version: "1.0.0"
+  description: >
+    Especificação normativa de tipos, enums e schemas da API do Pluriverso — busca federada,
+    consulta de membros e conceitos, cadastro self-service de adesão, e a superfície
+    administrativa do Comitê Federado. A leitura humana (propósito, exemplos, regras de
+    negócio) está em `docs/api.md`; onde os dois documentos divergirem, este arquivo prevalece.
+    Envelope de coleção, envelope de erro, operadores de filtro e códigos de status HTTP são
+    herdados verbatim do ADR-002 local (`docs/decisions/ADR-002-api-publica-rest.md`).
+  contact:
+    name: Comitê Federado do Pluriverso
+  license:
+    name: "Ver LICENSE do repositório"
+    url: "https://github.com/edalcin/pluriverso/blob/main/LICENSE"
+externalDocs:
+  description: ADR-004/D6 — Arquitetura Federada, Protocolo de Publicação
+  url: https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md
+
+servers:
+  - url: "{baseUrl}"
+    description: >
+      Instância do Pluriverso. A URL base é por instância (ADR-009/MI2 — Topologia
+      Multi-Instância), configurada via a variável de ambiente PUBLIC_BASE_URL — nunca um
+      domínio fixo.
+    variables:
+      baseUrl:
+        default: "https://pluriverso.example.org"
+        description: URL pública da instância do Pluriverso sendo consultada.
+
+tags:
+  - name: Busca e Descoberta
+    description: Endpoints públicos de busca federada, registros, membros, conceitos e estatísticas.
+  - name: Adesão à Federação
+    description: Cadastro self-service de novos membros (ADR-006/E1).
+  - name: Saúde
+    description: Verificação de disponibilidade da instância.
+  - name: "Comitê - Adesão"
+    description: Fila de pedidos de adesão, decisão e probe técnico (ADR-006/E2, E3). Requer autenticação do Comitê.
+  - name: "Comitê - Membros e Harvest"
+    description: Administração de membros ativos e disparo/histórico de harvest. Requer autenticação do Comitê.
+  - name: "Comitê - Mapeamentos e Conceitos"
+    description: Curadoria de mapeamentos semânticos SKOS e cadastro manual de conceitos. Requer autenticação do Comitê.
+  - name: "Comitê - Auditoria"
+    description: Consulta somente-leitura do log de governança. Requer autenticação do Comitê.
+
+security: []
+
+paths:
+  /api/v1/search:
+    get:
+      operationId: searchRecords
+      tags: [Busca e Descoberta]
+      summary: Busca federada
+      description: >
+        Busca combinando filtros estruturados, FTS5 e expansão semântica opcional via
+        mapeamentos SKOS aprovados (ver `docs/busca-semantica.md`).
+      security: []
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+          description: Consulta textual, casada contra records_fts e rótulos de conceito quando expand=skos.
+        - name: expand
+          in: query
+          schema: { type: string, enum: [skos, none], default: skos }
+        - name: member_id
+          in: query
+          schema: { type: string }
+        - name: member_type
+          in: query
+          schema: { $ref: "#/components/schemas/MemberType" }
+        - name: source_type
+          in: query
+          schema: { type: string, enum: [primary, secondary] }
+        - name: community
+          in: query
+          schema: { type: string }
+        - name: species
+          in: query
+          schema: { type: string }
+        - name: region
+          in: query
+          schema: { type: string }
+        - name: country
+          in: query
+          schema: { type: string }
+        - name: state
+          in: query
+          schema: { type: string }
+        - name: use_category
+          in: query
+          schema: { type: string }
+        - name: updated_since
+          in: query
+          schema: { type: string, format: date-time }
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: sort
+          in: query
+          schema: { type: string, enum: [-relevance, -member_updated_at, scientific_name], default: -relevance }
+      responses:
+        "200":
+          description: Coleção de registros correspondentes à busca.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/RecordItem" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /api/v1/records/{federated_id}:
+    get:
+      operationId: getRecord
+      tags: [Busca e Descoberta]
+      summary: Registro por id federado
+      description: >
+        Recurso único — retorna o objeto RecordItem diretamente, sem envelope de coleção.
+        `federated_id` é `{member_id}/{record_id}` (ADR-004/D6).
+      security: []
+      parameters:
+        - name: federated_id
+          in: path
+          required: true
+          schema: { type: string }
+          description: Percent-encoded, pois contém "/".
+          example: "0192f...%2Frecord_001"
+      responses:
+        "200":
+          description: Registro encontrado.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RecordItem" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/members:
+    get:
+      operationId: listMembers
+      tags: [Busca e Descoberta]
+      summary: Membros ativos
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: member_type
+          in: query
+          schema: { $ref: "#/components/schemas/MemberType" }
+        - name: sort
+          in: query
+          schema: { type: string, enum: [member_name, -joined_at, -record_count], default: member_name }
+      responses:
+        "200":
+          description: Coleção de membros ativos.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/MemberSummary" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/v1/concepts/{uri}/mappings:
+    get:
+      operationId: getConceptMappings
+      tags: [Busca e Descoberta]
+      summary: Mapeamentos aprovados de um conceito
+      description: Só retorna mapeamentos com status "approved" — os únicos que a busca semântica usa.
+      security: []
+      parameters:
+        - name: uri
+          in: path
+          required: true
+          schema: { type: string, format: uri }
+          description: URI absoluta do conceito, percent-encoded.
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+      responses:
+        "200":
+          description: Coleção de mapeamentos aprovados (pode ser vazia).
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/ConceptMapping" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/v1/stats:
+    get:
+      operationId: getStats
+      tags: [Busca e Descoberta]
+      summary: Totais agregados por membro, tipo de fonte e país
+      security: []
+      responses:
+        "200":
+          description: Agregado único — sem envelope de coleção.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StatsSummary" }
+        "500": { $ref: "#/components/responses/ServerError" }
+
+  /api/federation/membership-requests:
+    get:
+      operationId: listMembershipRequests
+      tags: ["Comitê - Adesão"]
+      summary: Fila de pedidos de adesão
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, active, rejected] }
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: sort
+          in: query
+          schema: { type: string, default: "-created_at" }
+      responses:
+        "200":
+          description: Coleção de pedidos de adesão.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/MembershipRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+    post:
+      operationId: createMembershipRequest
+      tags: [Adesão à Federação]
+      summary: Cadastro self-service de novo membro
+      description: >
+        Contrato fixado em ADR-006/E1. Não leva /v1 — protocolo de federação, não API pública
+        versionada. Sujeito a RATE_LIMIT_MEMBERSHIP_PER_HOUR por IP.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MembershipRequestInput" }
+      responses:
+        "201":
+          description: Pedido registrado, status "pending".
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MembershipRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /health:
+    get:
+      operationId: getHealth
+      tags: [Saúde]
+      summary: Estado de disponibilidade da instância
+      security: []
+      responses:
+        "200":
+          description: Instância operacional.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+        "503":
+          description: Banco SQLite inacessível — corpo simples, não ErrorEnvelope, para HEALTHCHECK sem parsing de erro.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+
+  /api/federation/membership-requests/{id}:
+    patch:
+      operationId: decideMembershipRequest
+      tags: ["Comitê - Adesão"]
+      summary: Decidir um pedido de adesão
+      description: Só decisão humana move o estado (ADR-006/E2). O resultado do probe nunca decide sozinho (ADR-006/E3).
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MembershipDecisionInput" }
+      responses:
+        "200":
+          description: Pedido decidido.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MembershipRequest" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/federation/membership-requests/{id}/probe:
+    post:
+      operationId: reprobeMembershipRequest
+      tags: ["Comitê - Adesão"]
+      summary: Re-executar o probe técnico de um pedido pendente
+      description: >
+        Algoritmo do probe (anti-SSRF, timeouts, faixas de IP bloqueadas) especificado em
+        `docs/governanca-e-seguranca.md`. Resposta 200 mesmo quando technical_check.ok=false —
+        o resultado do probe é dado, não erro (ADR-006/E3).
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Probe executado (independente do resultado).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MembershipRequest" }
+        "400":
+          description: Probe não pôde ser tentado — error.code PROBE_FAILED.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/federation/members/{member_id}/purge:
+    post:
+      operationId: purgeMember
+      tags: ["Comitê - Membros e Harvest"]
+      summary: Remover um membro e todos os seus dados (purge_by_member)
+      description: >
+        ADR-004/D4. Sequência transacional exata em docs/modelo-de-dados.md §4.2. Irreversível.
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: member_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PurgeInput" }
+      responses:
+        "200":
+          description: Membro removido; resumo de contagens.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PurgeSummary" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/federation/members/{member_id}:
+    patch:
+      operationId: updateMember
+      tags: ["Comitê - Membros e Harvest"]
+      summary: Atualizar harvest_enabled e cron por membro
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: member_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MemberUpdateInput" }
+      responses:
+        "200":
+          description: Membro atualizado.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /api/federation/members/{member_id}/harvest:
+    post:
+      operationId: triggerHarvest
+      tags: ["Comitê - Membros e Harvest"]
+      summary: Disparar uma run de harvest manual
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: member_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TriggerHarvestInput" }
+      responses:
+        "201":
+          description: Run de harvest criada, status "running".
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HarvestRun" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/federation/harvest-runs:
+    get:
+      operationId: listHarvestRuns
+      tags: ["Comitê - Membros e Harvest"]
+      summary: Histórico de runs de harvest
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: member_id
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [running, ok, partial, failed] }
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: sort
+          in: query
+          schema: { type: string, default: "-started_at" }
+      responses:
+        "200":
+          description: Coleção de runs de harvest.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/HarvestRun" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/v1/mappings:
+    get:
+      operationId: listMappings
+      tags: ["Comitê - Mapeamentos e Conceitos"]
+      summary: Listar mapeamentos semânticos (qualquer status)
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [proposed, approved, rejected] }
+        - name: source_member_id
+          in: query
+          schema: { type: string }
+        - name: target_member_id
+          in: query
+          schema: { type: string }
+        - name: predicate
+          in: query
+          schema: { $ref: "#/components/schemas/SkosPredicate" }
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: sort
+          in: query
+          schema: { type: string, default: "-proposed_at" }
+      responses:
+        "200":
+          description: Coleção de mapeamentos.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/ConceptMapping" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+    post:
+      operationId: proposeMapping
+      tags: ["Comitê - Mapeamentos e Conceitos"]
+      summary: Propor um mapeamento semântico entre conceitos de membros distintos
+      security: [{ committeeBasic: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProposeMappingInput" }
+      responses:
+        "201":
+          description: Mapeamento proposto, status "proposed".
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ConceptMapping" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/v1/mappings/{id}:
+    patch:
+      operationId: decideMapping
+      tags: ["Comitê - Mapeamentos e Conceitos"]
+      summary: Aprovar ou rejeitar um mapeamento proposto
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MappingDecisionInput" }
+      responses:
+        "200":
+          description: Mapeamento decidido.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ConceptMapping" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Mapeamento já decidido — error.code MAPPING_CONFLICT.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+  /api/v1/concepts:
+    post:
+      operationId: createConcept
+      tags: ["Comitê - Mapeamentos e Conceitos"]
+      summary: Cadastro manual de conceito
+      description: Caminho alternativo ao harvest automático (contrato-harvest.md §5, ainda não normativo).
+      security: [{ committeeBasic: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ConceptInput" }
+      responses:
+        "201":
+          description: Conceito cadastrado, origin "manual".
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Concept" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /api/federation/audit-log:
+    get:
+      operationId: listAuditLog
+      tags: ["Comitê - Auditoria"]
+      summary: Consulta somente-leitura do log de governança
+      security: [{ committeeBasic: [] }]
+      parameters:
+        - name: action
+          in: query
+          schema: { $ref: "#/components/schemas/AuditAction" }
+        - name: target_id
+          in: query
+          schema: { type: string }
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
+        - name: sort
+          in: query
+          schema: { type: string, default: "-at" }
+      responses:
+        "200":
+          description: Coleção de entradas de auditoria.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PaginationEnvelope"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: "#/components/schemas/AuditEntry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "422": { $ref: "#/components/responses/UnprocessableEntity" }
+
+components:
+  securitySchemes:
+    committeeBasic:
+      type: http
+      scheme: basic
+      description: >
+        HTTP Basic Auth com uma conta nomeada por integrante do Comitê Federado. Esquema
+        fixado em ADR-003 local (docs/decisions/ADR-003-autenticacao-do-comite.md); aplicado
+        somente aos endpoints administrativos do Comitê.
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    LimitParam:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+
+  responses:
+    BadRequest:
+      description: Payload ou parâmetro mal formado.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Unauthorized:
+      description: Credencial ausente ou inválida.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Forbidden:
+      description: Credencial válida sem permissão para a ação.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    NotFound:
+      description: Recurso inexistente.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Conflict:
+      description: Estado do recurso impede a operação.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    UnprocessableEntity:
+      description: Valor de enum inválido.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    RateLimited:
+      description: Rate limit por IP excedido.
+      headers:
+        X-RateLimit-Limit: { schema: { type: integer } }
+        X-RateLimit-Remaining: { schema: { type: integer } }
+        X-RateLimit-Reset: { schema: { type: integer } }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    ServerError:
+      description: Falha não tratada no servidor.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+
+  schemas:
+    MemberType:
+      type: string
+      description: >
+        Valores fechados em português, verbatim (ADR-006/E1) — nenhuma tradução para inglês
+        é válida.
+      enum:
+        - fontes_secundarias
+        - comunidade_tradicional
+        - acervos_historicos
+        - obras_naturalistas
+
+    SkosPredicate:
+      type: string
+      description: Predicados SKOS aceitos para mapeamento entre membros (ADR-008/DB5).
+      enum:
+        - "skos:exactMatch"
+        - "skos:closeMatch"
+        - "skos:broadMatch"
+        - "skos:narrowMatch"
+
+    ErrorCode:
+      type: string
+      description: Lista fechada de códigos de erro máquina-legíveis (ADR-002 local).
+      enum:
+        - VALIDATION_ERROR
+        - INVALID_ENUM
+        - REQUIRED_FIELD
+        - NOT_FOUND
+        - UNAUTHORIZED
+        - FORBIDDEN
+        - RATE_LIMIT_EXCEEDED
+        - MEMBER_NOT_ACTIVE
+        - MAPPING_CONFLICT
+        - PROBE_FAILED
+        - INTERNAL_ERROR
+
+    AuditAction:
+      type: string
+      enum:
+        - membership_approved
+        - membership_rejected
+        - member_purged
+        - harvest_disabled
+        - harvest_reenabled
+        - mapping_approved
+        - mapping_rejected
+        - mapping_removed_by_purge
+        - concept_registered
+
+    Label:
+      type: object
+      description: Rótulo multilíngue no modelo SKOS-XL.
+      required: [value, language]
+      properties:
+        value: { type: string }
+        language: { type: string, description: "Tag de idioma BCP 47, ex. pt-BR" }
+
+    PaginationEnvelope:
+      type: object
+      description: Envelope de coleção herdado verbatim do ADR-002 local. Só se aplica a respostas de lista.
+      required: [pagination, links]
+      properties:
+        pagination:
+          type: object
+          required: [page, limit, totalPages, totalItems, hasNext, hasPrev]
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            totalPages: { type: integer }
+            totalItems: { type: integer }
+            hasNext: { type: boolean }
+            hasPrev: { type: boolean }
+        links:
+          type: object
+          required: [self, first, prev, next, last]
+          properties:
+            self: { type: string }
+            first: { type: string }
+            prev: { type: [string, "null"] }
+            next: { type: [string, "null"] }
+            last: { type: string }
+
+    ErrorEnvelope:
+      type: object
+      description: Envelope de erro herdado verbatim do ADR-002 local.
+      required: [error, meta]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { $ref: "#/components/schemas/ErrorCode" }
+            message: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                required: [field, message, code]
+                properties:
+                  field: { type: string }
+                  message: { type: string }
+                  code: { $ref: "#/components/schemas/ErrorCode" }
+        meta:
+          type: object
+          required: [requestId, timestamp]
+          properties:
+            requestId: { type: string }
+            timestamp: { type: string, format: date-time }
+
+    RecordItem:
+      type: object
+      description: >
+        Item de registro federado. Recurso único (GET /api/v1/records/{federated_id}) e item
+        de coleção (data[] de GET /api/v1/search) usam este mesmo schema.
+      required:
+        - federated_id
+        - member_id
+        - member_name
+        - member_type
+        - member_url_base
+        - license
+        - attribution
+        - member_updated_at
+        - harvested_at
+        - profile
+        - data
+      properties:
+        federated_id:
+          type: string
+          description: "{member_id}/{record_id} (ADR-004/D6)."
+        member_id: { type: string }
+        member_name: { type: string }
+        member_type: { $ref: "#/components/schemas/MemberType" }
+        member_url_base: { type: string, format: uri }
+        license:
+          type: [string, "null"]
+          description: "null explícito quando não declarada pelo membro — nunca um default inventado."
+        attribution:
+          type: [string, "null"]
+          description: "null explícito quando não declarada pelo membro — nunca um default inventado."
+        license_notice:
+          type: string
+          description: "Presente apenas quando license/attribution são null: \"não declarada pelo membro; consultar {member_url_base}\"."
+        member_updated_at: { type: string, format: date-time }
+        harvested_at: { type: string, format: date-time }
+        profile:
+          type: object
+          description: Perfil mínimo extraído best-effort (docs/contrato-harvest.md §4). Campos ausentes são omitidos, não nulos.
+        data:
+          type: object
+          description: Payload íntegro publicado pelo membro, sem transformação.
+        matched_via:
+          type: array
+          description: >
+            Presente apenas quando o item foi alcançado por expansão semântica (expand=skos),
+            não por FTS direto. O rótulo devolvido em data/profile é sempre o do próprio
+            membro, nunca o do termo consultado.
+          items:
+            type: object
+            required: [concept_uri, predicate, member_id]
+            properties:
+              concept_uri: { type: string, format: uri }
+              predicate: { $ref: "#/components/schemas/SkosPredicate" }
+              member_id: { type: string }
+
+    MemberSummary:
+      type: object
+      required: [member_id, member_name, member_type, url_base, joined_at, record_count]
+      properties:
+        member_id: { type: string }
+        member_name: { type: string }
+        member_type: { $ref: "#/components/schemas/MemberType" }
+        url_base: { type: string, format: uri }
+        joined_at: { type: string, format: date-time }
+        record_count: { type: integer }
+
+    Member:
+      description: MemberSummary estendido com campos administrativos, retornado por updateMember.
+      allOf:
+        - $ref: "#/components/schemas/MemberSummary"
+        - type: object
+          required: [harvest_enabled, harvest_cron_incremental, harvest_cron_full, consecutive_failures]
+          properties:
+            harvest_enabled: { type: boolean }
+            harvest_cron_incremental: { type: string }
+            harvest_cron_full: { type: string }
+            consecutive_failures: { type: integer }
+
+    MemberUpdateInput:
+      type: object
+      minProperties: 1
+      properties:
+        harvest_enabled: { type: boolean }
+        harvest_cron_incremental: { type: string, description: "Expressão cron (5 campos)." }
+        harvest_cron_full: { type: string, description: "Expressão cron (5 campos)." }
+
+    TechnicalCheck:
+      type: object
+      required: [ok, checked_at, checks, failure_reason, http_status, elapsed_ms]
+      properties:
+        ok: { type: boolean }
+        checked_at: { type: string, format: date-time }
+        checks:
+          type: object
+          additionalProperties: true
+          description: Mapa de sub-checks executados pelo probe (docs/governanca-e-seguranca.md).
+        failure_reason: { type: [string, "null"] }
+        http_status: { type: [integer, "null"] }
+        elapsed_ms: { type: [integer, "null"] }
+
+    MembershipRequestInput:
+      type: object
+      required: [member_name, member_type, url_base, contact_email, care_declaration]
+      properties:
+        member_name: { type: string }
+        member_type: { $ref: "#/components/schemas/MemberType" }
+        url_base: { type: string, format: uri }
+        contact_email: { type: string, format: email }
+        care_declaration: { type: string }
+
+    MembershipRequest:
+      type: object
+      required:
+        - id
+        - member_name
+        - member_type
+        - url_base
+        - contact_email
+        - care_declaration
+        - status
+        - technical_check
+        - member_id
+        - created_at
+        - decided_at
+        - decided_by
+        - rejection_reason
+      properties:
+        id: { type: string }
+        member_name: { type: string }
+        member_type: { $ref: "#/components/schemas/MemberType" }
+        url_base: { type: string, format: uri }
+        contact_email: { type: string, format: email }
+        care_declaration: { type: string }
+        status: { type: string, enum: [pending, active, rejected] }
+        technical_check:
+          oneOf:
+            - $ref: "#/components/schemas/TechnicalCheck"
+            - type: "null"
+        member_id: { type: [string, "null"] }
+        created_at: { type: string, format: date-time }
+        decided_at: { type: [string, "null"], format: date-time }
+        decided_by: { type: [string, "null"] }
+        rejection_reason: { type: [string, "null"] }
+
+    MembershipDecisionInput:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [active, rejected] }
+        rejection_reason:
+          type: [string, "null"]
+          description: Obrigatório quando status=rejected.
+
+    PurgeInput:
+      type: object
+      required: [confirm_member_name]
+      properties:
+        confirm_member_name:
+          type: string
+          description: Deve corresponder exatamente ao member_name do membro alvo.
+
+    PurgeSummary:
+      type: object
+      required: [member_id, member_name, purged_at, counts]
+      properties:
+        member_id: { type: string }
+        member_name: { type: string }
+        purged_at: { type: string, format: date-time }
+        counts:
+          type: object
+          required: [records, concept_mappings, concepts, harvest_runs]
+          properties:
+            records: { type: integer }
+            concept_mappings: { type: integer }
+            concepts: { type: integer }
+            harvest_runs: { type: integer }
+
+    TriggerHarvestInput:
+      type: object
+      required: [mode]
+      properties:
+        mode: { type: string, enum: [incremental, full] }
+
+    HarvestRun:
+      type: object
+      required:
+        - id
+        - member_id
+        - mode
+        - status
+        - started_at
+        - finished_at
+        - pages_fetched
+        - upserted
+        - removed
+        - rejected
+        - http_status_last
+        - error_message
+      properties:
+        id: { type: string }
+        member_id: { type: string }
+        mode: { type: string, enum: [incremental, full] }
+        status: { type: string, enum: [running, ok, partial, failed] }
+        started_at: { type: string, format: date-time }
+        finished_at: { type: [string, "null"], format: date-time }
+        pages_fetched: { type: integer }
+        upserted: { type: integer }
+        removed: { type: integer }
+        rejected: { type: integer }
+        http_status_last: { type: [integer, "null"] }
+        error_message: { type: [string, "null"] }
+
+    ProposeMappingInput:
+      type: object
+      required: [source_uri, target_uri, predicate]
+      properties:
+        source_uri: { type: string, format: uri }
+        target_uri: { type: string, format: uri }
+        predicate: { $ref: "#/components/schemas/SkosPredicate" }
+        note: { type: [string, "null"] }
+
+    MappingDecisionInput:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [approved, rejected] }
+        note: { type: [string, "null"] }
+
+    ConceptMapping:
+      type: object
+      required:
+        - id
+        - source_uri
+        - source_member_id
+        - target_uri
+        - target_member_id
+        - predicate
+        - status
+        - proposed_by
+        - proposed_at
+        - decided_by
+        - decided_at
+        - note
+      properties:
+        id: { type: string }
+        source_uri: { type: string, format: uri }
+        source_member_id: { type: string }
+        target_uri: { type: string, format: uri }
+        target_member_id: { type: string }
+        predicate: { $ref: "#/components/schemas/SkosPredicate" }
+        status: { type: string, enum: [proposed, approved, rejected] }
+        proposed_by: { type: string }
+        proposed_at: { type: string, format: date-time }
+        decided_by: { type: [string, "null"] }
+        decided_at: { type: [string, "null"], format: date-time }
+        note: { type: [string, "null"] }
+
+    ConceptInput:
+      type: object
+      required: [uri, member_id, scheme_uri, pref_labels]
+      properties:
+        uri: { type: string, format: uri }
+        member_id: { type: string }
+        scheme_uri: { type: string, format: uri }
+        pref_labels:
+          type: array
+          items: { $ref: "#/components/schemas/Label" }
+        alt_labels:
+          type: array
+          items: { $ref: "#/components/schemas/Label" }
+        broader:
+          type: array
+          items: { type: string, format: uri }
+        narrower:
+          type: array
+          items: { type: string, format: uri }
+
+    Concept:
+      type: object
+      required: [uri, member_id, scheme_uri, pref_labels, alt_labels, broader, narrower, origin, updated_at]
+      properties:
+        uri: { type: string, format: uri }
+        member_id: { type: string }
+        scheme_uri: { type: string, format: uri }
+        pref_labels:
+          type: array
+          items: { $ref: "#/components/schemas/Label" }
+        alt_labels:
+          type: array
+          items: { $ref: "#/components/schemas/Label" }
+        broader:
+          type: array
+          items: { type: string, format: uri }
+        narrower:
+          type: array
+          items: { type: string, format: uri }
+        origin: { type: string, enum: [harvest, manual] }
+        updated_at: { type: string, format: date-time }
+
+    AuditEntry:
+      type: object
+      required: [id, action, actor, target_type, target_id, reason, before, after, at]
+      properties:
+        id: { type: string }
+        action: { $ref: "#/components/schemas/AuditAction" }
+        actor: { type: string }
+        target_type: { type: string }
+        target_id: { type: string }
+        reason: { type: [string, "null"] }
+        before:
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: "null"
+        after:
+          oneOf:
+            - type: object
+              additionalProperties: true
+            - type: "null"
+        at: { type: string, format: date-time }
+
+    StatsSummary:
+      type: object
+      required: [total_records, total_members, generated_at, by_member, by_source_type, by_country]
+      properties:
+        total_records: { type: integer }
+        total_members: { type: integer }
+        generated_at: { type: string, format: date-time }
+        by_member:
+          type: array
+          items:
+            type: object
+            required: [member_id, member_name, record_count]
+            properties:
+              member_id: { type: string }
+              member_name: { type: string }
+              record_count: { type: integer }
+        by_source_type:
+          type: array
+          items:
+            type: object
+            required: [source_type, record_count]
+            properties:
+              source_type: { type: string, enum: [primary, secondary] }
+              record_count: { type: integer }
+        by_country:
+          type: array
+          items:
+            type: object
+            required: [country, record_count]
+            properties:
+              country: { type: string }
+              record_count: { type: integer }
+
+    HealthStatus:
+      type: object
+      required: [status, version, instance_name, db, last_harvest_at]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        version: { type: string }
+        instance_name: { type: string, description: "Valor de INSTANCE_NAME." }
+        db: { type: string, enum: [ok, unreachable] }
+        last_harvest_at:
+          type: object
+          description: "Mapa member_id -> timestamp ISO-8601 da última run bem-sucedida."
+          additionalProperties: { type: string, format: date-time }

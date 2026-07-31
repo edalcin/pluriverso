@@ -165,17 +165,19 @@ Cada registro no índice carrega `member_id` permanente. O Pluriverso nunca "apa
 
 O Pluriverso é um **novo componente**, ainda sem implementação. As principais funcionalidades a desenvolver:
 
-- [ ] Harvest scheduler: coleta periódica configurável por membro
-- [ ] Parser do endpoint de harvest: consumir e normalizar respostas dos membros
-- [ ] Índice central: armazenamento (SQLite+JSON) e busca (FTS5) dos registros coletados
-- [ ] Camada de mapeamento SKOS: CRUD de mapeamentos entre ConceptSchemes
-- [ ] Motor de busca semântica: busca expandida por mapeamentos SKOS
-- [ ] API pública REST: endpoint de consulta federada
-- [ ] `purge_by_member`: remoção completa de um membro do índice
-- [ ] Interface de governança: painel para o Comitê Federado
-- [ ] Endpoint `POST /api/federation/membership-requests`: cadastro self-service de novos membros
-- [ ] Probe de verificação técnica (anti-SSRF) sobre a URL-BASE informada no cadastro
-- [ ] Fila de aprovação (`GET`/`PATCH /api/federation/membership-requests`) para o Comitê Federado decidir
+- [ ] [`docs/contrato-harvest.md` §2](docs/contrato-harvest.md#2--modos-de-coleta-e-detecção-de-remoção) (Modos de coleta) / [`HarvestScheduler`](docs/arquitetura.md) — Harvest scheduler: coleta periódica configurável por membro
+- [ ] [`docs/contrato-harvest.md` §1](docs/contrato-harvest.md#1--contrato-de-registros-cliente) (Comportamento do coletor) — Parser do endpoint de harvest: consumir e normalizar respostas dos membros
+- [ ] [`docs/modelo-de-dados.md`](docs/modelo-de-dados.md) (`records`, `records_fts`) — Índice central: armazenamento (SQLite+JSON) e busca (FTS5) dos registros coletados
+- [ ] [`docs/modelo-de-dados.md`](docs/modelo-de-dados.md) (`concept_mappings`) / [`docs/api.md`](docs/api.md) (`/api/v1/mappings`) — Camada de mapeamento SKOS: CRUD de mapeamentos entre ConceptSchemes
+- [ ] [`docs/busca-semantica.md`](docs/busca-semantica.md) — Motor de busca semântica: busca expandida por mapeamentos SKOS
+- [ ] [`docs/api.md` §5.1](docs/api.md#51--pública-sem-autenticação) — API pública REST: endpoint de consulta federada
+- [ ] [`docs/modelo-de-dados.md`](docs/modelo-de-dados.md#purge_by_membermember_id) — `purge_by_member`: remoção completa de um membro do índice
+- [ ] [`docs/governanca-e-seguranca.md`](docs/governanca-e-seguranca.md) (Painel do Comitê Federado) — Interface de governança: painel para o Comitê Federado
+- [ ] [`docs/api.md`](docs/api.md) (`POST /api/federation/membership-requests`) — Endpoint `POST /api/federation/membership-requests`: cadastro self-service de novos membros
+- [ ] [`docs/governanca-e-seguranca.md`](docs/governanca-e-seguranca.md) (Probe Anti-SSRF) — Probe de verificação técnica (anti-SSRF) sobre a URL-BASE informada no cadastro
+- [ ] [`docs/api.md` §5.2](docs/api.md#52--comitê-federado-autenticada) — Fila de aprovação (`GET`/`PATCH /api/federation/membership-requests`) para o Comitê Federado decidir
+
+Fechamento da documentação: arquitetura completa (C4) em [`docs/arquitetura.md`](docs/arquitetura.md), fases de implementação em [`docs/roadmap.md`](docs/roadmap.md), e deploy, variáveis de ambiente e Docker em [`docs/operacao.md`](docs/operacao.md).
 
 ---
 
