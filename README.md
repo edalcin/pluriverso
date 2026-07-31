@@ -4,6 +4,8 @@ Middleware de federação para o ecossistema de Conhecimento Tradicional Associa
 
 [![GitHub](https://img.shields.io/badge/GitHub-pluriverso-181717?logo=github)](https://github.com/edalcin/pluriverso)
 
+> **Status**: Documentação de implementação completa — stack e framework, API pública REST, contrato de harvest, modelo de dados SQLite, autenticação e segurança do Comitê, busca semântica SKOS, arquitetura C4 e roadmap de 7 fases já especificados (ver `docs/`) — ainda sem código.
+
 ---
 
 ## O que é o Pluriverso?
@@ -163,7 +165,7 @@ Cada registro no índice carrega `member_id` permanente. O Pluriverso nunca "apa
 
 ## Necessidades de Implementação (v3.3)
 
-O Pluriverso é um **novo componente**, ainda sem implementação. As principais funcionalidades a desenvolver:
+O Pluriverso é um **novo componente**; o planejamento completo de sua implementação já foi realizado — arquitetura C4, contratos de API e de harvest, modelo de dados e roadmap de 7 fases estão documentados (links abaixo). As principais funcionalidades a implementar:
 
 - [ ] [`docs/contrato-harvest.md` §2](docs/contrato-harvest.md#2--modos-de-coleta-e-detecção-de-remoção) (Modos de coleta) / [`HarvestScheduler`](docs/arquitetura.md) — Harvest scheduler: coleta periódica configurável por membro
 - [ ] [`docs/contrato-harvest.md` §1](docs/contrato-harvest.md#1--contrato-de-registros-cliente) (Comportamento do coletor) — Parser do endpoint de harvest: consumir e normalizar respostas dos membros
