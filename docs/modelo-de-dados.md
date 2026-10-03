@@ -2,11 +2,11 @@
 
 Este documento especifica o esquema completo do índice SQLite do Pluriverso: as nove tabelas, suas colunas geradas, índices, invariantes, a estratégia de migração e o procedimento transacional de remoção de membro (`purge_by_member`). É referência normativa para a implementação de `HarvestClient`, `RecordIndexer`, `ConceptHarvester`, `SearchService`, `MembershipService`, `MappingService`, `PurgeService` e `AuditService` (ver [`arquitetura.md`](arquitetura.md)).
 
-Convenções globais: ids internos são **UUIDv7** (ordenáveis por tempo de criação, sem coordenação central); `created_at`/`updated_at` são strings **ISO-8601 UTC** (`2026-07-31T00:00:00Z`). Todas as tabelas de domínio seguem o padrão de tabela único-documento-JSON de [ADR-005/DA2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md), com exceção declarada e justificada de `record_terms` (§4).
+Convenções globais: ids internos são **UUIDv7** (ordenáveis por tempo de criação, sem coordenação central); `created_at`/`updated_at` são strings **ISO-8601 UTC** (`2026-07-31T00:00:00Z`). Todas as tabelas de domínio seguem o padrão de tabela único-documento-JSON de [ADR-005/DA2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-005-sqlite-json-persistence.md), com exceção declarada e justificada de `record_terms` (§4).
 
 ## Pragmas de conexão
 
-Executados na abertura de toda conexão com o arquivo SQLite, conforme [ADR-005/DA1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md):
+Executados na abertura de toda conexão com o arquivo SQLite, conforme [ADR-005/DA1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-005-sqlite-json-persistence.md):
 
 ```sql
 PRAGMA journal_mode = WAL;
@@ -22,7 +22,7 @@ PRAGMA busy_timeout = 5000;
 
 **Propósito:** membros ativos da federação — a fonte de verdade sobre quem é coletado.
 
-`id` é o `member_id`: UUIDv7 gerado no momento da aprovação do pedido de adesão, e **nunca reciclado**, mesmo após `purge_by_member` ([ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)) — ver §"Invariantes" abaixo e a seção `purge_by_member` mais adiante.
+`id` é o `member_id`: UUIDv7 gerado no momento da aprovação do pedido de adesão, e **nunca reciclado**, mesmo após `purge_by_member` ([ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)) — ver §"Invariantes" abaixo e a seção `purge_by_member` mais adiante.
 
 ```sql
 CREATE TABLE members (
@@ -64,7 +64,7 @@ Chaves de `doc`:
 
 ## 2. `membership_requests`
 
-**Propósito:** fila de pedidos de adesão à federação, do cadastro self-service até a decisão do Comitê ([ADR-006/E1–E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)).
+**Propósito:** fila de pedidos de adesão à federação, do cadastro self-service até a decisão do Comitê ([ADR-006/E1–E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)).
 
 ```sql
 CREATE TABLE membership_requests (
@@ -106,7 +106,7 @@ Chaves de `doc` — nomes **exatamente** os de ADR-006:
 **Invariantes:**
 - `rejection_reason` **não-nulo** quando `status = 'rejected'` — validado na aplicação antes do `UPDATE` que decide o pedido (`PATCH /api/federation/membership-requests/{id}`).
 - `member_id` **só é não-nulo** quando `status = 'active'` — é o `MembershipService` que gera o UUIDv7 e grava `member_id` atomicamente com a transição de `status`, na mesma transação em que insere a linha correspondente em `members`.
-- Reenvio de um pedido `rejected` volta o `status` para `pending` ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)) — só decisão humana do Comitê move o estado, nunca o próprio solicitante.
+- Reenvio de um pedido `rejected` volta o `status` para `pending` ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)) — só decisão humana do Comitê move o estado, nunca o próprio solicitante.
 
 ---
 
@@ -154,7 +154,7 @@ Chaves de `doc`:
 
 | Chave | Tipo | Descrição |
 |---|---|---|
-| `federated_id` | string | `{member_id}/{record_id}`, chave federada estável ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)) |
+| `federated_id` | string | `{member_id}/{record_id}`, chave federada estável ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)) |
 | `member_id` | string (UUIDv7) | referência lógica a `members.id` (sem `FOREIGN KEY` declarada — `doc` é JSON; a integridade é garantida por `PurgeService`, não pelo motor) |
 | `record_id` | string | id local do registro no membro |
 | `visibility` | string | sempre `"public"` neste índice — filtrado no harvest ([`contrato-harvest.md`](contrato-harvest.md) §1) |
@@ -213,7 +213,7 @@ CREATE VIRTUAL TABLE records_fts USING fts5(
 );
 ```
 
-**Autônoma, não external-content:** `records_fts` não usa `content='records'` porque `titulo`/`corpo` são texto **derivado** de JSON aninhado achatado — não correspondem a nenhuma coluna direta de `records` que o mecanismo external-content pudesse espelhar automaticamente; a sincronização é feita explicitamente pelo `RecordIndexer`, na mesma transação SQLite do upsert em `records` ([ADR-008/DB4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
+**Autônoma, não external-content:** `records_fts` não usa `content='records'` porque `titulo`/`corpo` são texto **derivado** de JSON aninhado achatado — não correspondem a nenhuma coluna direta de `records` que o mecanismo external-content pudesse espelhar automaticamente; a sincronização é feita explicitamente pelo `RecordIndexer`, na mesma transação SQLite do upsert em `records` ([ADR-008/DB4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
 
 **Composição de `titulo`:** `profile.scientific_name` concatenado com todos os `record_terms.term_value` onde `term_type = 'vernacular_name'` para aquele `record_id`, separados por espaço único.
 
@@ -330,7 +330,7 @@ Chaves de `doc`:
 | `source_member_id` | string (UUIDv7) | membro do conceito de origem |
 | `target_uri` | string (URI) | conceito de destino |
 | `target_member_id` | string (UUIDv7) | membro do conceito de destino |
-| `predicate` | string (enum) | `skos:exactMatch` \| `skos:closeMatch` \| `skos:broadMatch` \| `skos:narrowMatch` — verbatim, [ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md) |
+| `predicate` | string (enum) | `skos:exactMatch` \| `skos:closeMatch` \| `skos:broadMatch` \| `skos:narrowMatch` — verbatim, [ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md) |
 | `status` | string (enum) | `proposed` \| `approved` \| `rejected` |
 | `proposed_by` | string | quem propôs (curador ou sugestão automática — ver [`busca-semantica.md`](busca-semantica.md)) |
 | `proposed_at` | string (ISO-8601) | |
@@ -341,7 +341,7 @@ Chaves de `doc`:
 **Invariantes:**
 - `source_member_id != target_member_id` — mapeamento é sempre **entre** membros distintos (`README.md` §3); validado na aplicação antes do `INSERT`.
 - Par `(source_uri, target_uri, predicate)` é único — `UNIQUE INDEX idx_concept_mappings_triple`.
-- Só `status = 'approved'` participa da expansão de busca ([ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md), "aprovados pelo Comitê e nunca impostos") — `SemanticExpander` sempre filtra `WHERE status = 'approved'` na CTE recursiva.
+- Só `status = 'approved'` participa da expansão de busca ([ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md), "aprovados pelo Comitê e nunca impostos") — `SemanticExpander` sempre filtra `WHERE status = 'approved'` na CTE recursiva.
 
 ---
 
@@ -451,7 +451,7 @@ Esta seção **especifica** o mecanismo; não cria os arquivos `.sql` de migraç
 
 ## `purge_by_member(member_id)`
 
-Implementa [ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) — remoção imediata e completa de um membro, executada pelo `PurgeService`. Sequência **exata**, executada como **uma única transação SQLite**:
+Implementa [ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) — remoção imediata e completa de um membro, executada pelo `PurgeService`. Sequência **exata**, executada como **uma única transação SQLite**:
 
 1. `DELETE FROM records_fts WHERE federated_id IN (SELECT federated_id FROM records WHERE member_id = ?)`
 2. `DELETE FROM records WHERE member_id = ?` — a cascata (`ON DELETE CASCADE`) limpa `record_terms` automaticamente.
@@ -459,7 +459,7 @@ Implementa [ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/
 4. `DELETE FROM concepts WHERE member_id = ?`
 5. `DELETE FROM harvest_runs WHERE member_id = ?`
 6. `DELETE FROM members WHERE id = ?`
-7. `UPDATE membership_requests SET doc = json_set(doc, '$.status', 'rejected', '$.rejection_reason', 'Membro removido da federação (purge)') WHERE member_id = ?` — o pedido original volta a não-`active`; **`member_id` permanece gravado** no `doc` do pedido, para nunca ser reciclado ([ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)).
+7. `UPDATE membership_requests SET doc = json_set(doc, '$.status', 'rejected', '$.rejection_reason', 'Membro removido da federação (purge)') WHERE member_id = ?` — o pedido original volta a não-`active`; **`member_id` permanece gravado** no `doc` do pedido, para nunca ser reciclado ([ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)).
 8. `INSERT INTO audit_log` com `action = 'member_purged'`, `target_type = 'member'`, `target_id = member_id`, e `before` contendo as contagens de cada `DELETE` (registros, mapeamentos, conceitos, runs) coletadas antes da execução dos passos 1–5.
 9. Um `INSERT INTO audit_log` por mapeamento removido no passo 3, com `action = 'mapping_removed_by_purge'`, `target_type = 'concept_mapping'`, `target_id` = id do mapeamento.
 

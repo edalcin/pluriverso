@@ -1,8 +1,8 @@
 # Arquitetura do Pluriverso (C4)
 
-Este documento descreve a arquitetura do Pluriverso nos três primeiros níveis do [C4 Model](https://c4model.com/) — Contexto, Contêiner e Componente. Segue a estrutura de heading usada em [`Arquitetura-BioCultural/docs/c4-model`](https://github.com/edalcin/Arquitetura-BioCultural/tree/main/docs/c4-model), adaptada para os três níveis num único documento.
+Este documento descreve a arquitetura do Pluriverso nos três primeiros níveis do [C4 Model](https://c4model.com/) — Contexto, Contêiner e Componente. Segue a estrutura de heading usada em [`Arquitetura-BioCultural/docs/tecnico/c4-model`](https://github.com/edalcin/Arquitetura-BioCultural/tree/main/docs/tecnico/c4-model), adaptada para os três níveis num único documento.
 
-O Pluriverso é o middleware de federação descrito em [ADR-004/D1-D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md): coleta periodicamente registros e conceitos de instâncias membro via REST, indexa localmente, expande buscas por mapeamento semântico SKOS aprovado pelo Comitê Federado, e serve uma API pública e uma UI de busca. Não existiam nomes de componente pré-existentes no C4 Model central para reusar (nenhuma menção a "Pluriverso" em nenhum dos três arquivos daquele repositório) — os nomes fixados no Nível 3 deste documento são, portanto, canônicos: toda a documentação subsequente do Pluriverso e o código que vier a implementá-lo devem usá-los verbatim, sem variação.
+O Pluriverso é o middleware de federação descrito em [ADR-004/D1-D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md): coleta periodicamente registros e conceitos de instâncias membro via REST, indexa localmente, expande buscas por mapeamento semântico SKOS aprovado pelo Comitê Federado, e serve uma API pública e uma UI de busca. Não existiam nomes de componente pré-existentes no C4 Model central para reusar (nenhuma menção a "Pluriverso" em nenhum dos três arquivos daquele repositório) — os nomes fixados no Nível 3 deste documento são, portanto, canônicos: toda a documentação subsequente do Pluriverso e o código que vier a implementá-lo devem usá-los verbatim, sem variação.
 
 ---
 
@@ -10,11 +10,11 @@ O Pluriverso é o middleware de federação descrito em [ADR-004/D1-D6](https://
 
 ### Visão Geral
 
-O Pluriverso relaciona-se com quatro atores e **nenhum sistema externo obrigatório**. Isso contrasta deliberadamente com o sistema central da Arquitetura-BioCultural, que integra GBIF, Flora e Funga do Brasil e Fauna do Brasil para validação taxonômica ([`01-context-diagram.md`](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/c4-model/01-context-diagram.md), seção "Sistemas Externos").
+O Pluriverso relaciona-se com quatro atores e **nenhum sistema externo obrigatório**. Isso contrasta deliberadamente com o sistema central da Arquitetura-BioCultural, que integra GBIF, Flora e Funga do Brasil e Fauna do Brasil para validação taxonômica ([`01-context-diagram.md`](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/c4-model/01-context-diagram.md), seção "Sistemas Externos").
 
-**O Pluriverso não chama GBIF, Flora e Funga do Brasil, Fauna do Brasil, nem qualquer outra base taxonômica externa.** A validação taxonômica é responsabilidade exclusiva de cada instância membro, antes de o registro ser exposto no endpoint de harvest — o Pluriverso apenas coleta, indexa e reexpõe `data` como o membro o publicou ([ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md), "camada de mapeamento semântico no Pluriverso" — mapeamento entre conceitos publicados, nunca verificação de nomenclatura contra uma autoridade taxonômica). Impor uma segunda validação taxonômica no Pluriverso duplicaria uma responsabilidade que já é do membro soberano e contradiria a governança distribuída de [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md).
+**O Pluriverso não chama GBIF, Flora e Funga do Brasil, Fauna do Brasil, nem qualquer outra base taxonômica externa.** A validação taxonômica é responsabilidade exclusiva de cada instância membro, antes de o registro ser exposto no endpoint de harvest — o Pluriverso apenas coleta, indexa e reexpõe `data` como o membro o publicou ([ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md), "camada de mapeamento semântico no Pluriverso" — mapeamento entre conceitos publicados, nunca verificação de nomenclatura contra uma autoridade taxonômica). Impor uma segunda validação taxonômica no Pluriverso duplicaria uma responsabilidade que já é do membro soberano e contradiria a governança distribuída de [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md).
 
-Pela mesma razão de soberania, o Pluriverso **não embute o BioCultTermos como submodule**. [ADR-007/F1-F2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-007-shared-bioculttermos-module.md) reserva o submodule BioCultTermos às unidades membro que produzem conteúdo primário; o Pluriverso apenas **coleta** os `ConceptScheme` que cada membro publica (Nível 1 §3.5 do contrato de harvest), sem instanciar sua própria cópia do módulo terminológico.
+Pela mesma razão de soberania, o Pluriverso **não embute o BioCultTermos como submodule**. [ADR-007/F1-F2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-007-shared-bioculttermos-module.md) reserva o submodule BioCultTermos às unidades membro que produzem conteúdo primário; o Pluriverso apenas **coleta** os `ConceptScheme` que cada membro publica (Nível 1 §3.5 do contrato de harvest), sem instanciar sua própria cópia do módulo terminológico.
 
 ### Diagrama
 
@@ -49,16 +49,16 @@ Nenhum sistema externo aparece no diagrama — não há caixa de GBIF, Flora e F
 **Interações:** busca textual federada com expansão semântica opcional (`GET /api/v1/search`), leitura de registro por id federado, listagem de membros ativos, leitura de mapeamentos aprovados de um conceito, estatísticas agregadas. Nunca escreve.
 
 #### 2. Membro do Comitê Federado
-**Papel:** governança da federação, autenticado via HTTP Basic ([ADR-006/E4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md), fechado por [ADR-003 local](decisions/ADR-003-autenticacao-do-comite.md)).
+**Papel:** governança da federação, autenticado via HTTP Basic ([ADR-006/E4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md), fechado por [ADR-003 local](decisions/ADR-003-autenticacao-do-comite.md)).
 **Interações:** decide pedidos de adesão (`pending → active|rejected`), reexecuta probe técnico, aprova ou rejeita mapeamentos SKOS, dispara harvest manual, executa `purge_by_member`, consulta o `audit_log`.
 
 #### 3. Solicitante de Adesão
 **Papel:** operador de uma instância membro candidata, sem autenticação prévia.
-**Interações:** único ato é `POST /api/federation/membership-requests` — submete `member_name`, `member_type`, `url_base`, `contact_email`, `care_declaration` ([ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)). Pode reenviar após rejeição; não decide o próprio pedido.
+**Interações:** único ato é `POST /api/federation/membership-requests` — submete `member_name`, `member_type`, `url_base`, `contact_email`, `care_declaration` ([ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)). Pode reenviar após rejeição; não decide o próprio pedido.
 
 #### 4. Instância de Membro
 **Papel:** sistema externo passivo — não inicia nenhuma interação com o Pluriverso; é **coletada** por ele.
-**Interações:** expõe `GET /api/federation/records` ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)) e, opcionalmente, `GET /api/federation/concepts` (`docs/contrato-harvest.md` §5). Um dos quatro `member_type` verbatim: `fontes_secundarias` \| `comunidade_tradicional` \| `acervos_historicos` \| `obras_naturalistas`. Nunca envia dados por push — o modelo é estritamente pull, periódico ([ADR-004/D1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)).
+**Interações:** expõe `GET /api/federation/records` ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)) e, opcionalmente, `GET /api/federation/concepts` (`docs/contrato-harvest.md` §5). Um dos quatro `member_type` verbatim: `fontes_secundarias` \| `comunidade_tradicional` \| `acervos_historicos` \| `obras_naturalistas`. Nunca envia dados por push — o modelo é estritamente pull, periódico ([ADR-004/D1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)).
 
 ---
 
@@ -68,7 +68,7 @@ Nenhum sistema externo aparece no diagrama — não há caixa de GBIF, Flora e F
 
 O Pluriverso é **um único contêiner de aplicação** Node.js/Express, escutando na porta `3100`, mais **um único arquivo SQLite** em volume externo. Não há fila de mensagens, não há cache distribuído, não há worker separado: o agendador de harvest roda **no mesmo processo** da aplicação HTTP, via `node-cron` ([ADR-001 local](decisions/ADR-001-stack-e-framework.md)).
 
-Engine SQLite embutida no processo Node (via `better-sqlite3`) e arquivo de dados fora do container, num volume, **não são contraditórios** — são duas decisões independentes e complementares de [ADR-008/DB1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md) (nenhum processo de banco separado a operar) e [ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md) (o arquivo de dados sobrevive à recriação do container, materializado por `SQLITE_DB_PATH`). "Embutida" descreve onde a *engine* executa (dentro do processo Node); "volume externo" descreve onde o *arquivo* persiste (fora da camada de container efêmera). Um container pode ser destruído e recriado sem perda de dados justamente porque só o arquivo, não o processo, carrega o estado.
+Engine SQLite embutida no processo Node (via `better-sqlite3`) e arquivo de dados fora do container, num volume, **não são contraditórios** — são duas decisões independentes e complementares de [ADR-008/DB1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md) (nenhum processo de banco separado a operar) e [ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md) (o arquivo de dados sobrevive à recriação do container, materializado por `SQLITE_DB_PATH`). "Embutida" descreve onde a *engine* executa (dentro do processo Node); "volume externo" descreve onde o *arquivo* persiste (fora da camada de container efêmera). Um container pode ser destruído e recriado sem perda de dados justamente porque só o arquivo, não o processo, carrega o estado.
 
 ### Diagrama
 
@@ -110,8 +110,8 @@ As setas pontilhadas de membro para container representam o harvest **iniciado p
 
 #### 2. Arquivo SQLite (volume externo)
 **Responsabilidade:** única fonte de persistência — `members`, `membership_requests`, `records`, `record_terms`, `records_fts`, `concepts`, `concept_mappings`, `harvest_runs`, `audit_log`, `schema_migrations` (DDL completo em `docs/modelo-de-dados.md`).
-**Engine:** `better-sqlite3`, síncrona, embutida no processo Node — sem servidor de banco separado, sem porta de rede própria, sem processo a operar isoladamente ([ADR-008/DB1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
-**Persistência:** o arquivo vive fora do filesystem efêmero do container, em `SQLITE_DB_PATH` (default `/data/pluriverso.sqlite`) — recriar o container não apaga os dados ([ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
+**Engine:** `better-sqlite3`, síncrona, embutida no processo Node — sem servidor de banco separado, sem porta de rede própria, sem processo a operar isoladamente ([ADR-008/DB1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
+**Persistência:** o arquivo vive fora do filesystem efêmero do container, em `SQLITE_DB_PATH` (default `/data/pluriverso.sqlite`) — recriar o container não apaga os dados ([ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)).
 **Pragmas obrigatórios na inicialização:** `PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;`.
 
 ---
@@ -233,7 +233,7 @@ graph TB
 **Depende de:** `HarvestClient` (execução do harvest de registros), `ConceptHarvester` (execução do harvest de conceitos, quando o membro publica o endpoint).
 
 ##### 5. `HarvestClient`
-**Responsabilidade:** cliente HTTP paginado contra `GET /api/federation/records` de um membro ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)); valida `url_base` contra a mesma allowlist anti-SSRF do `ProbeService` a cada run (não só na adesão), aplica timeout e retry com backoff exponencial.
+**Responsabilidade:** cliente HTTP paginado contra `GET /api/federation/records` de um membro ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)); valida `url_base` contra a mesma allowlist anti-SSRF do `ProbeService` a cada run (não só na adesão), aplica timeout e retry com backoff exponencial.
 **Depende de:** `RecordIndexer` (entrega cada página coletada para indexação), `AuditService` (registra desativação do harvest após `HARVEST_MAX_FAILURES` falhas consecutivas).
 
 ##### 6. `RecordIndexer`
@@ -251,17 +251,17 @@ graph TB
 **Depende de:** `SemanticExpander` (etapa 3 do pipeline).
 
 ##### 9. `SemanticExpander`
-**Responsabilidade:** expande um conjunto de conceitos-semente por CTE recursiva sobre `concept_mappings`, aplicando as regras de transitividade por predicado ([ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)) e considerando **apenas** mapeamentos `status='approved'`.
+**Responsabilidade:** expande um conjunto de conceitos-semente por CTE recursiva sobre `concept_mappings`, aplicando as regras de transitividade por predicado ([ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)) e considerando **apenas** mapeamentos `status='approved'`.
 **Depende de:** nenhum outro componente (consulta direta ao arquivo SQLite).
 
 #### Governança
 
 ##### 10. `MembershipService`
-**Responsabilidade:** mantém a fila de `membership_requests`, gera `member_id` (UUIDv7, nunca reciclado — [ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)) na aprovação, e aplica as transições de estado `pending → active | rejected` ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)).
+**Responsabilidade:** mantém a fila de `membership_requests`, gera `member_id` (UUIDv7, nunca reciclado — [ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)) na aprovação, e aplica as transições de estado `pending → active | rejected` ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)).
 **Depende de:** `ProbeService` (verificação técnica anexada ao pedido, como sinal — nunca gate), `AuditService` (registra aprovação/rejeição).
 
 ##### 11. `ProbeService`
-**Responsabilidade:** executa a verificação técnica anti-SSRF contra o `url_base` declarado ([ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)), grava o resultado em `membership_requests.doc.technical_check`; o resultado nunca decide sozinho o pedido.
+**Responsabilidade:** executa a verificação técnica anti-SSRF contra o `url_base` declarado ([ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)), grava o resultado em `membership_requests.doc.technical_check`; o resultado nunca decide sozinho o pedido.
 **Depende de:** nenhum outro componente.
 
 ##### 12. `MappingService`
@@ -269,7 +269,7 @@ graph TB
 **Depende de:** `AuditService` (registra decisão de mapeamento).
 
 ##### 13. `PurgeService`
-**Responsabilidade:** executa `purge_by_member(member_id)` ([ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)) numa única transação — remove registros, entradas de FTS, mapeamentos, conceitos e runs do membro, e reverte o pedido de adesão para não-`active`, preservando o `member_id` para nunca ser reciclado.
+**Responsabilidade:** executa `purge_by_member(member_id)` ([ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)) numa única transação — remove registros, entradas de FTS, mapeamentos, conceitos e runs do membro, e reverte o pedido de adesão para não-`active`, preservando o `member_id` para nunca ser reciclado.
 **Depende de:** `AuditService` (registra o purge e cada mapeamento removido).
 
 ##### 14. `AuditService`
@@ -280,8 +280,8 @@ graph TB
 
 ## Multi-instância
 
-O Pluriverso é instanciável, não singleton ([ADR-009/MI1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)): cada instância é um contêiner e um arquivo SQLite independentes ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)), e nada nos três níveis acima pressupõe uma única instância global — o diagrama de Nível 2 descreve **um** contêiner porque descreve **uma** instância; uma implantação real pode ter várias, cada uma com seu próprio conjunto de membros coletados.
+O Pluriverso é instanciável, não singleton ([ADR-009/MI1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)): cada instância é um contêiner e um arquivo SQLite independentes ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)), e nada nos três níveis acima pressupõe uma única instância global — o diagrama de Nível 2 descreve **um** contêiner porque descreve **uma** instância; uma implantação real pode ter várias, cada uma com seu próprio conjunto de membros coletados.
 
 - `INSTANCE_NAME` identifica a instância em `GET /health` e no rodapé da `WebUi`, para quem opera múltiplas instâncias saber qual está respondendo.
-- `member_id` é **local à instância que o gerou** e **nunca** deve ser tratado como identidade global entre instâncias diferentes ([ADR-009/MI5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)) — o mesmo membro coletado por duas instâncias distintas recebe dois `member_id` distintos, sem relação formal entre eles. `docs/api.md` (produzido em paralelo a este documento) deve tornar essa restrição explícita para o consumidor da API, para que nenhuma integração externa tente casar `member_id` entre instâncias como se fosse um identificador federado único.
-- Não há hierarquia entre instâncias, nem instância "canônica" — cada uma é uma federação completa e independente, potencialmente com escopos distintos (por exemplo, por bioma, por região, por tipo de acervo), todas usando exatamente os mesmos contratos de harvest ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)) e a mesma arquitetura de componentes descrita no Nível 3.
+- `member_id` é **local à instância que o gerou** e **nunca** deve ser tratado como identidade global entre instâncias diferentes ([ADR-009/MI5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)) — o mesmo membro coletado por duas instâncias distintas recebe dois `member_id` distintos, sem relação formal entre eles. `docs/api.md` (produzido em paralelo a este documento) deve tornar essa restrição explícita para o consumidor da API, para que nenhuma integração externa tente casar `member_id` entre instâncias como se fosse um identificador federado único.
+- Não há hierarquia entre instâncias, nem instância "canônica" — cada uma é uma federação completa e independente, potencialmente com escopos distintos (por exemplo, por bioma, por região, por tipo de acervo), todas usando exatamente os mesmos contratos de harvest ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)) e a mesma arquitetura de componentes descrita no Nível 3.

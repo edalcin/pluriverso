@@ -2,7 +2,7 @@
 
 > **Documento de estado deste componente.** Registra onde o Pluriverso está e o que falta fazer. Ponto de entrada de qualquer nova sessão de trabalho — humana ou assistida por IA.
 >
-> Pendência de arquitetura da federação **não** mora aqui: mora em [`Arquitetura-BioCultural/docs/proximosPassos.md`](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/proximosPassos.md), que é a referência única do projeto. Aqui ficam só as pendências deste componente.
+> Pendência de arquitetura da federação **não** mora aqui: mora em [`Arquitetura-BioCultural/docs/tecnico/proximosPassos.md`](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/proximosPassos.md), que é a referência única do projeto. Aqui ficam só as pendências deste componente.
 >
 > **Regras de manutenção:** ao final de cada sessão, atualizar a data, o estado e a lista de pendências. Pendência resolvida não é apagada: é marcada como feita, com o `onde`. Caminhos são relativos à raiz deste repositório.
 
@@ -45,4 +45,4 @@ Ordenadas pelo roadmap (`docs/roadmap.md`).
 | Contrato de harvest (visão do implementador) | `docs/contrato-harvest.md` |
 | Stack e framework | `docs/decisions/ADR-001-stack-e-framework.md` |
 | Governança e segurança | `docs/governanca-e-seguranca.md` |
-| Referência única do projeto | <https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/proximosPassos.md> |
+| Referência única do projeto | <https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/proximosPassos.md> |

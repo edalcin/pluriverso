@@ -6,7 +6,7 @@ Este documento é a leitura humana da API — propósito de cada endpoint, exemp
 
 A base técnica de envelope de coleção, envelope de erro, operadores de filtro e códigos de status HTTP é herdada verbatim do ADR de referência da Arquitetura-BioCultural, conforme já decidido em [`docs/decisions/ADR-002-api-publica-rest.md`](decisions/ADR-002-api-publica-rest.md) (ADR-002 local) — este documento **não** repete essa decisão, só a aplica endpoint a endpoint.
 
-A URL base de cada instância é configurável via `PUBLIC_BASE_URL` — não existe domínio fixo. É a materialização de [ADR-009/MI2 — Topologia Multi-Instância do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md), que trata cada instância do Pluriverso como implantação independente, com seu próprio `member_id`-space e sua própria base URL. `openapi.yaml` usa a variável de servidor `{baseUrl}` pelo mesmo motivo.
+A URL base de cada instância é configurável via `PUBLIC_BASE_URL` — não existe domínio fixo. É a materialização de [ADR-009/MI2 — Topologia Multi-Instância do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md), que trata cada instância do Pluriverso como implantação independente, com seu próprio `member_id`-space e sua própria base URL. `openapi.yaml` usa a variável de servidor `{baseUrl}` pelo mesmo motivo.
 
 ## Sumário
 
@@ -38,7 +38,7 @@ A lista fechada de códigos (ADR-002 local) reserva `MAPPING_CONFLICT` ao recurs
 ### `MEMBER_NOT_ACTIVE` e `PROBE_FAILED`
 
 - **`MEMBER_NOT_ACTIVE`** — usado quando uma ação de federação é recusada porque `members.doc.harvest_enabled = false` para o `member_id` alvo (desativação automática por falhas consecutivas, [`contrato-harvest.md` §3](contrato-harvest.md), ou desativação manual pelo Comitê). Só se aplica a `POST /api/federation/members/{member_id}/harvest`: reativar exige `PATCH /api/federation/members/{member_id}` explícito primeiro — disparar harvest não reativa implicitamente um membro desativado.
-- **`PROBE_FAILED`** — reservado ao caso em que o probe **não pôde sequer ser tentado** (ex.: `url_base` armazenado não é uma URL sintaticamente válida). Um probe que roda e **encontra** um problema de rede, DNS bloqueado ou schema incorreto **não** é erro HTTP — é resultado de negócio, registrado em `technical_check.ok = false` numa resposta `200 OK` (a decisão de adesão nunca é bloqueada pelo resultado do probe, [ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)). O algoritmo do probe em si (faixas de IP bloqueadas, resolução DNS, timeout) é especificado em [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md), não repetido aqui.
+- **`PROBE_FAILED`** — reservado ao caso em que o probe **não pôde sequer ser tentado** (ex.: `url_base` armazenado não é uma URL sintaticamente válida). Um probe que roda e **encontra** um problema de rede, DNS bloqueado ou schema incorreto **não** é erro HTTP — é resultado de negócio, registrado em `technical_check.ok = false` numa resposta `200 OK` (a decisão de adesão nunca é bloqueada pelo resultado do probe, [ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)). O algoritmo do probe em si (faixas de IP bloqueadas, resolução DNS, timeout) é especificado em [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md), não repetido aqui.
 
 ## Autenticação
 
@@ -74,7 +74,7 @@ A lista fechada de códigos (ADR-002 local) reserva `MAPPING_CONFLICT` ao recurs
 | `limit` | integer | `20` | **Máximo 100** |
 | `sort` | enum `-relevance`\|`-member_updated_at`\|`scientific_name` | `-relevance` | `-relevance` exige `bm25`/score de expansão; nos demais casos ordena por coluna |
 
-`member_type` usa os quatro literais fixados em [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md): `fontes_secundarias`, `comunidade_tradicional`, `acervos_historicos`, `obras_naturalistas` — em português, verbatim, sem tradução.
+`member_type` usa os quatro literais fixados em [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md): `fontes_secundarias`, `comunidade_tradicional`, `acervos_historicos`, `obras_naturalistas` — em português, verbatim, sem tradução.
 
 **Corpo de requisição:** nenhum. **Autenticação:** nenhuma.
 
@@ -123,7 +123,7 @@ Quando o registro entrou no resultado por FTS direto (não por expansão de mape
 
 ### `GET /api/v1/records/{federated_id}`
 
-`operationId: getRecord`. Consulta um registro único pelo identificador federado. `federated_id` é o par `{member_id}/{record_id}` fixado em [ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) — como contém `/`, o segmento de path deve ser percent-encoded (`0192f...%2Frecord_001`).
+`operationId: getRecord`. Consulta um registro único pelo identificador federado. `federated_id` é o par `{member_id}/{record_id}` fixado em [ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) — como contém `/`, o segmento de path deve ser percent-encoded (`0192f...%2Frecord_001`).
 
 **Corpo de requisição:** nenhum. **Autenticação:** nenhuma.
 
@@ -154,7 +154,7 @@ Quando o registro entrou no resultado por FTS direto (não por expansão de mape
 
 ### `GET /api/v1/members`
 
-`operationId: listMembers`. Lista os membros **ativos** da federação (a única existência que a tabela `members` registra — não há membro "inativo" listado aqui; ver [ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) para o ciclo de vida completo do pedido de adesão).
+`operationId: listMembers`. Lista os membros **ativos** da federação (a única existência que a tabela `members` registra — não há membro "inativo" listado aqui; ver [ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) para o ciclo de vida completo do pedido de adesão).
 
 **Parâmetros de query:** `page`, `limit` (padrão geral); `member_type` (igualdade ou `[in]=`); `sort` (enum `member_name`\|`-joined_at`\|`-record_count`, default `member_name`).
 
@@ -238,9 +238,9 @@ Se o conceito existir mas não tiver nenhum mapeamento `approved`, a resposta é
 
 ### `POST /api/federation/membership-requests`
 
-`operationId: createMembershipRequest`. Cadastro self-service de um novo membro, conforme [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md). Não leva `/v1` — é contrato de protocolo de federação, não API pública versionada (ver [ADR-002 local](decisions/ADR-002-api-publica-rest.md) §Versionamento).
+`operationId: createMembershipRequest`. Cadastro self-service de um novo membro, conforme [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md). Não leva `/v1` — é contrato de protocolo de federação, não API pública versionada (ver [ADR-002 local](decisions/ADR-002-api-publica-rest.md) §Versionamento).
 
-**Corpo de requisição** (campos de [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md), todos obrigatórios):
+**Corpo de requisição** (campos de [ADR-006/E1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md), todos obrigatórios):
 
 ```json
 {
@@ -254,7 +254,7 @@ Se o conceito existir mas não tiver nenhum mapeamento `approved`, a resposta é
 
 **Autenticação:** nenhuma. Sujeito a rate limit dedicado (`RATE_LIMIT_MEMBERSHIP_PER_HOUR`, default `5`/hora por IP — [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md)).
 
-Ao receber o pedido, o `ProbeService` executa o probe técnico de [ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) **de forma síncrona**, contra `{url_base}/api/federation/records?page=1&size=1`, e grava o resultado em `technical_check` **antes** de responder — mas o resultado, seja qual for, **nunca** impede a criação do pedido (`status` sempre nasce `pending`).
+Ao receber o pedido, o `ProbeService` executa o probe técnico de [ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) **de forma síncrona**, contra `{url_base}/api/federation/records?page=1&size=1`, e grava o resultado em `technical_check` **antes** de responder — mas o resultado, seja qual for, **nunca** impede a criação do pedido (`status` sempre nasce `pending`).
 
 **Resposta de sucesso — `201 Created`** (objeto `MembershipRequest` direto):
 
@@ -316,7 +316,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 
 ### `GET /api/federation/membership-requests?status=`
 
-`operationId: listMembershipRequests`. Fila de pedidos de adesão ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)).
+`operationId: listMembershipRequests`. Fila de pedidos de adesão ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)).
 
 **Parâmetros de query:** `status` (enum `pending`\|`active`\|`rejected`, opcional — omitido lista todos); `page`, `limit` (padrão geral); `sort` (default `-created_at`).
 
@@ -328,7 +328,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 
 ### `PATCH /api/federation/membership-requests/{id}`
 
-`operationId: decideMembershipRequest`. Decisão humana sobre um pedido ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) — só decisão humana move o estado; o resultado do probe nunca decide sozinho).
+`operationId: decideMembershipRequest`. Decisão humana sobre um pedido ([ADR-006/E2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) — só decisão humana move o estado; o resultado do probe nunca decide sozinho).
 
 **Corpo de requisição:**
 
@@ -336,7 +336,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 { "status": "active", "rejection_reason": null }
 ```
 
-`rejection_reason` é **obrigatório** quando `status: "rejected"` (senão `400 REQUIRED_FIELD`). Ao decidir `status: "active"`: gera `member_id` (UUIDv7, nunca reciclado — [ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)), cria a linha em `members`, e agenda a primeira coleta (sempre modo `full`, [`contrato-harvest.md` §2](contrato-harvest.md)).
+`rejection_reason` é **obrigatório** quando `status: "rejected"` (senão `400 REQUIRED_FIELD`). Ao decidir `status: "active"`: gera `member_id` (UUIDv7, nunca reciclado — [ADR-006/E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)), cria a linha em `members`, e agenda a primeira coleta (sempre modo `full`, [`contrato-harvest.md` §2](contrato-harvest.md)).
 
 **Autenticação:** `committeeBasic`.
 
@@ -373,7 +373,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 
 ### `POST /api/federation/membership-requests/{id}/probe`
 
-`operationId: reprobeMembershipRequest`. Re-executa o probe técnico contra o `url_base` do pedido ([ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)) — útil quando o membro corrige a implementação depois de um `technical_check` falho. O algoritmo (validação anti-SSRF, timeouts, faixas de IP bloqueadas) está especificado em [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md); este endpoint só documenta o contrato HTTP.
+`operationId: reprobeMembershipRequest`. Re-executa o probe técnico contra o `url_base` do pedido ([ADR-006/E3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)) — útil quando o membro corrige a implementação depois de um `technical_check` falho. O algoritmo (validação anti-SSRF, timeouts, faixas de IP bloqueadas) está especificado em [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md); este endpoint só documenta o contrato HTTP.
 
 **Corpo de requisição:** nenhum. **Autenticação:** `committeeBasic`.
 
@@ -387,7 +387,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 
 ### `POST /api/federation/members/{member_id}/purge`
 
-`operationId: purgeMember`. Remoção imediata e completa de um membro, conforme [ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) — registros, `record_terms` em cascata, `concept_mappings` em qualquer direção, `concepts`, `harvest_runs`, e a linha de `members`, numa única transação. A sequência exata de exclusão está especificada em [`docs/modelo-de-dados.md`](modelo-de-dados.md) §4.2 (`purge_by_member`); este endpoint só documenta o contrato HTTP.
+`operationId: purgeMember`. Remoção imediata e completa de um membro, conforme [ADR-004/D4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) — registros, `record_terms` em cascata, `concept_mappings` em qualquer direção, `concepts`, `harvest_runs`, e a linha de `members`, numa única transação. A sequência exata de exclusão está especificada em [`docs/modelo-de-dados.md`](modelo-de-dados.md) §4.2 (`purge_by_member`); este endpoint só documenta o contrato HTTP.
 
 **Corpo de requisição:**
 
@@ -492,7 +492,7 @@ Toda ação de escrita desta seção grava uma entrada em `audit_log` com `actor
 { "source_uri": "https://termos.baniwa.example.org/concept/0192a...", "target_uri": "https://termos.useflora.example.org/concept/0088b...", "predicate": "skos:closeMatch", "note": "Sugerido por similaridade de rótulo" }
 ```
 
-`predicate` ∈ `skos:exactMatch`\|`skos:closeMatch`\|`skos:broadMatch`\|`skos:narrowMatch` ([ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)). O servidor resolve `source_member_id`/`target_member_id` a partir do `member_id` dono de cada `uri` em `concepts`; `proposed_by` é preenchido com o usuário autenticado; `status` nasce sempre `proposed` — nunca `approved` diretamente, mesmo quando a proposta vem de sugestão automática por similaridade ([ADR-004 "Mitigações"](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)); só decisão humana em `PATCH .../mappings/{id}` aprova.
+`predicate` ∈ `skos:exactMatch`\|`skos:closeMatch`\|`skos:broadMatch`\|`skos:narrowMatch` ([ADR-008/DB5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)). O servidor resolve `source_member_id`/`target_member_id` a partir do `member_id` dono de cada `uri` em `concepts`; `proposed_by` é preenchido com o usuário autenticado; `status` nasce sempre `proposed` — nunca `approved` diretamente, mesmo quando a proposta vem de sugestão automática por similaridade ([ADR-004 "Mitigações"](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)); só decisão humana em `PATCH .../mappings/{id}` aprova.
 
 **`POST` — resposta de sucesso `201 Created`** (objeto `ConceptMapping`, `status: "proposed"`).
 
@@ -604,10 +604,10 @@ Toda linha acima corresponde a uma escrita rejeitada **antes** de qualquer alter
 
 - [ADR-002 local — API Pública REST](decisions/ADR-002-api-publica-rest.md) — envelope, erros, filtros, status HTTP, versionamento (fonte deste documento para tudo que não é específico de endpoint)
 - [ADR-003 local — Autenticação do Comitê](decisions/ADR-003-autenticacao-do-comite.md) — esquema `committeeBasic`
-- [ADR-004 — Arquitetura Federada, D4 (purge) e D6 (contrato de registros)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
-- [ADR-006 — Protocolo de Adesão à Federação, E1–E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
-- [ADR-008 — Motor de Banco de Dados do Pluriverso, DB5 (predicados SKOS)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)
-- [ADR-009 — Topologia Multi-Instância do Pluriverso, MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
+- [ADR-004 — Arquitetura Federada, D4 (purge) e D6 (contrato de registros)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)
+- [ADR-006 — Protocolo de Adesão à Federação, E1–E5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)
+- [ADR-008 — Motor de Banco de Dados do Pluriverso, DB5 (predicados SKOS)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)
+- [ADR-009 — Topologia Multi-Instância do Pluriverso, MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
 - [`docs/contrato-harvest.md`](contrato-harvest.md) — comportamento do coletor, perfil mínimo, contrato de conceitos
 - [`docs/modelo-de-dados.md`](modelo-de-dados.md) — DDL, invariantes, sequência de `purge_by_member`
 - [`docs/busca-semantica.md`](busca-semantica.md) — pipeline de busca e regras de expansão SKOS

@@ -10,10 +10,10 @@ Conjunto **fechado** — nenhuma outra variável é lida pela aplicação. `SQLI
 
 | Variável | Obrigatória | Default | Descrição |
 |---|---|---|---|
-| `SQLITE_DB_PATH` | Opcional | `/data/pluriverso.sqlite` | Caminho do arquivo SQLite, externo ao container, em volume persistente ([ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)). |
+| `SQLITE_DB_PATH` | Opcional | `/data/pluriverso.sqlite` | Caminho do arquivo SQLite, externo ao container, em volume persistente ([ADR-008/DB2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)). |
 | `PORT` | Opcional | `3100` | Porta HTTP escutada pela aplicação Node.js/Express ([`docs/arquitetura.md`](arquitetura.md), Nível 2). |
 | `NODE_ENV` | Opcional | `production` | Modo de execução do Node/Express; controla verbosidade de erro e cache de views EJS. |
-| `INSTANCE_NAME` | **Obrigatória** | — | Identificador da instância, exibido em `GET /health` e no rodapé da `WebUi` — sem default sensato num contexto multi-instância ([ADR-009/MI5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)). |
+| `INSTANCE_NAME` | **Obrigatória** | — | Identificador da instância, exibido em `GET /health` e no rodapé da `WebUi` — sem default sensato num contexto multi-instância ([ADR-009/MI5](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)). |
 | `PUBLIC_BASE_URL` | **Obrigatória** | — | URL pública desta instância; base dos `links` de paginação e da variável de servidor `{baseUrl}` de [`docs/api/openapi.yaml`](api/openapi.yaml). |
 | `COMMITTEE_USERS` | **Obrigatória** | — | JSON com as contas nomeadas do Comitê Federado (`[{"username":...,"passwordHash":...}]`, bcrypt custo 12) — sem isso, nenhum endpoint de [`docs/api.md`](api.md) §5.2 é acessível ([`docs/decisions/ADR-003-autenticacao-do-comite.md`](decisions/ADR-003-autenticacao-do-comite.md)). |
 | `HARVEST_CRON_INCREMENTAL` | Opcional | `0 3 * * *` | Expressão cron do harvest incremental default, sobrescrevível por membro ([`docs/contrato-harvest.md`](contrato-harvest.md) §2). |
@@ -72,7 +72,7 @@ LOG_LEVEL=info
 
 ## Imagem Docker
 
-Build **multi-stage** sobre `node:20-alpine`, alvo de tamanho **< 200 MB** (`docs/principios.md` §Empacotamento). O toolchain nativo de compilação existe **só** no estágio de build — a imagem final não carrega compilador algum, mitigação explícita registrada em [ADR-008 — Motor de Banco de Dados do Pluriverso, seção Mitigações](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md), para o binário nativo de `better-sqlite3` não obrigar a imagem final a carregar `python3`/`make`/`g++`.
+Build **multi-stage** sobre `node:20-alpine`, alvo de tamanho **< 200 MB** (`docs/principios.md` §Empacotamento). O toolchain nativo de compilação existe **só** no estágio de build — a imagem final não carrega compilador algum, mitigação explícita registrada em [ADR-008 — Motor de Banco de Dados do Pluriverso, seção Mitigações](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md), para o binário nativo de `better-sqlite3` não obrigar a imagem final a carregar `python3`/`make`/`g++`.
 
 Conteúdo de referência do `Dockerfile` (não criado como arquivo por este documento):
 
@@ -204,7 +204,7 @@ Variáveis de ambiente, uma entrada **Variable** por linha da tabela acima (`Con
 
 ## Backup e Restauração
 
-**Backup consistente, com a aplicação no ar.** Em modo WAL (`PRAGMA journal_mode = WAL`, [ADR-005/DA1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md)), copiar o arquivo `.sqlite` diretamente com `cp` é inseguro — o conteúdo confirmado pode estar parcialmente no arquivo `-wal`, ainda não incorporado ao arquivo principal. O procedimento correto usa a própria engine SQLite para produzir uma cópia consistente sem parar o container:
+**Backup consistente, com a aplicação no ar.** Em modo WAL (`PRAGMA journal_mode = WAL`, [ADR-005/DA1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-005-sqlite-json-persistence.md)), copiar o arquivo `.sqlite` diretamente com `cp` é inseguro — o conteúdo confirmado pode estar parcialmente no arquivo `-wal`, ainda não incorporado ao arquivo principal. O procedimento correto usa a própria engine SQLite para produzir uma cópia consistente sem parar o container:
 
 ```sql
 VACUUM INTO '/backup/pluriverso-2026-07-31.sqlite';

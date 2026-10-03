@@ -80,7 +80,7 @@ Armazena e indexa os registros coletados para busca eficiente, implementado em *
 `better-sqlite3`** (JSON1 + FTS5), com arquivo único externo ao container via `SQLITE_DB_PATH` (default
 `/data/pluriverso.sqlite`), em modo WAL, no mesmo container da aplicação. O índice é uma **cópia derivada**
 dos dados públicos dos membros — a fonte de verdade permanece sempre no membro. Detalhes em
-[ADR-008](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md).
+[ADR-008](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md).
 
 ### 3. Camada de Mapeamento Semântico
 
@@ -120,7 +120,7 @@ Uma instância que já opera BioCultDB, BioCultRelatos, BioCultAcervos ou BioCul
 2. **Verificação técnica automática**: o Pluriverso testa `{URL-BASE}/api/federation/records` contra o contrato de harvest (HTTPS obrigatório, bloqueio de IPs privados/loopback). O resultado é anexado ao pedido como sinal para o Comitê — nunca aprova ou rejeita sozinho.
 3. **Fila de aprovação do Comitê Federado**: só uma decisão humana move o pedido para `active` (entra no agendador de harvest) ou `rejected` (motivo registrado; solicitante pode reenviar).
 
-Admissão nunca é automática — a verificação técnica é apoio à decisão, não substituto dela. Detalhes completos (modelo de dados, estados, mitigação de SSRF) em [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md).
+Admissão nunca é automática — a verificação técnica é apoio à decisão, não substituto dela. Detalhes completos (modelo de dados, estados, mitigação de SSRF) em [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md).
 
 ### Múltiplas Instâncias
 
@@ -134,7 +134,7 @@ comunidades, sem depender do Pluriverso público global. Pontos-chave:
 - Sem hierarquia entre instâncias — cada uma tem seu próprio Comitê Federado
 - Harvest coleta apenas `visibility: public` hoje; harvest autenticado para `restricted` é extensão futura
 
-Detalhes completos em [ADR-009](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md).
+Detalhes completos em [ADR-009](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md).
 
 ---
 
@@ -202,11 +202,11 @@ Fechamento da documentação: arquitetura completa (C4) em [`docs/arquitetura.md
 A arquitetura completa, incluindo diagramas C4, ADRs e decisões de design, está documentada em:
 
 **[Arquitetura BioCultural](https://github.com/edalcin/Arquitetura-BioCultural)** (v3.3) — especialmente:
-- [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
-- [ADR-005: Persistência SQLite com JSON](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-005-sqlite-json-persistence.md)
-- [ADR-006: Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
-- [ADR-008: Engine de Banco de Dados do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)
-- [ADR-009: Topologia Multi-Instância do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
+- [ADR-004: Arquitetura Federada v3.0](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)
+- [ADR-005: Persistência SQLite com JSON](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-005-sqlite-json-persistence.md)
+- [ADR-006: Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)
+- [ADR-008: Engine de Banco de Dados do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)
+- [ADR-009: Topologia Multi-Instância do Pluriverso](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
 
 ---
 

@@ -34,7 +34,7 @@ Sete fases de implementação, cada uma com uma entrega observável e um critér
 **Critério de aceitação:** um pedido de adesão submetido via `POST` entra com `status: pending`; o `ProbeService` grava `technical_check` no próprio pedido; e uma conta do Comitê, autenticada, aprova o pedido via `PATCH` — o pedido passa a `active` e um `member_id` novo é gerado.
 
 **Documentos-fonte:**
-- [ADR-006 — Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) (Arquitetura-BioCultural) — contrato de campos, máquina de estados, E1–E5.
+- [ADR-006 — Protocolo de Inscrição na Federação](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) (Arquitetura-BioCultural) — contrato de campos, máquina de estados, E1–E5.
 - [`docs/governanca-e-seguranca.md`](governanca-e-seguranca.md) — máquina de estados em Mermaid, painel do Comitê, algoritmo completo do probe anti-SSRF.
 - [`docs/decisions/ADR-003-autenticacao-do-comite.md`](decisions/ADR-003-autenticacao-do-comite.md) — mecanismo de autenticação (Basic Auth + bcrypt, `COMMITTEE_USERS`).
 - [`docs/api.md`](api.md) §5.1 e §5.2 — superfície HTTP exata dos três endpoints, corpo, respostas e códigos de erro.

@@ -4,16 +4,16 @@
 Aceito
 
 ## Contexto
-[ADR-006/E4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) delega explicitamente ao Pluriverso a escolha do mecanismo de autenticação de quem decide um pedido de adesão (`PATCH /api/federation/membership-requests/{id}`), registrando-a como **"decisão de implementação... bloqueador de produção"**: a fila de inscrição não pode ser aberta em produção com esse endpoint público e sem autenticação. A mesma lacuna se estende a todos os demais endpoints de governança do Comitê Federado — re-probe de pedido, `purge_by_member`, ativação/edição de membro, disparo manual de harvest, decisão de mapeamento semântico, cadastro manual de conceito e leitura do `audit_log` (todos listados em `docs/api.md` §5.2) — nenhum deles pode ficar público sem identificar quem age.
+[ADR-006/E4](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) delega explicitamente ao Pluriverso a escolha do mecanismo de autenticação de quem decide um pedido de adesão (`PATCH /api/federation/membership-requests/{id}`), registrando-a como **"decisão de implementação... bloqueador de produção"**: a fila de inscrição não pode ser aberta em produção com esse endpoint público e sem autenticação. A mesma lacuna se estende a todos os demais endpoints de governança do Comitê Federado — re-probe de pedido, `purge_by_member`, ativação/edição de membro, disparo manual de harvest, decisão de mapeamento semântico, cadastro manual de conceito e leitura do `audit_log` (todos listados em `docs/api.md` §5.2) — nenhum deles pode ficar público sem identificar quem age.
 
-O requisito não é só "bloquear acesso não autorizado": o **Modelo de Dados Mínimo** de [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md) exige o campo `decided_by` ("identificador do membro do Comitê que decidiu") em `membership_requests`, e `docs/modelo-de-dados.md` exige o campo equivalente `actor` em `audit_log`. Qualquer mecanismo que não identifique uma pessoa individual do Comitê torna esses dois campos uma mentira gravada no banco. A governança do Comitê Federado em si — quem tem assento, como delibera — é [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md); esta ADR decide apenas **como o software reconhece tecnicamente** uma pessoa já legitimada por aquele processo.
+O requisito não é só "bloquear acesso não autorizado": o **Modelo de Dados Mínimo** de [ADR-006](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md) exige o campo `decided_by` ("identificador do membro do Comitê que decidiu") em `membership_requests`, e `docs/modelo-de-dados.md` exige o campo equivalente `actor` em `audit_log`. Qualquer mecanismo que não identifique uma pessoa individual do Comitê torna esses dois campos uma mentira gravada no banco. A governança do Comitê Federado em si — quem tem assento, como delibera — é [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md); esta ADR decide apenas **como o software reconhece tecnicamente** uma pessoa já legitimada por aquele processo.
 
 ## Requisitos
 ### Funcionais
 - Autenticar toda requisição aos endpoints do Comitê Federado (`docs/api.md` §5.2), rejeitando credencial ausente ou inválida com `401` e `error.code: UNAUTHORIZED` ([ADR-002 local](ADR-002-api-publica-rest.md)).
 - Identificar de forma única e estável qual pessoa do Comitê autenticou cada requisição, para popular `decided_by` (em `membership_requests` e `concept_mappings`) e `actor` (em `audit_log`) na mesma transação da mudança.
 - Permitir revogar ou rotacionar a credencial de uma pessoa do Comitê sem afetar as demais contas.
-- Funcionar sem nenhum serviço de autenticação externo — auto-hospedagem trivial, inclusive para associações de recursos limitados que rodem sua própria instância ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)).
+- Funcionar sem nenhum serviço de autenticação externo — auto-hospedagem trivial, inclusive para associações de recursos limitados que rodem sua própria instância ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)).
 
 ### Não-Funcionais
 - Nenhuma dependência nova de runtime: sem servidor OIDC, sem tabela de sessão, sem emissor de token.
@@ -59,7 +59,7 @@ O requisito não é só "bloquear acesso não autorizado": o **Modelo de Dados M
 - Delegação de identidade a um provedor especializado, MFA nativo, gestão de conta centralizada.
 
 **Contras:**
-- Dependência de um provedor de identidade externo (ou a operação de um IdP próprio) — contradiz a auto-hospedagem trivial exigida por [ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md) justamente para associações de recursos limitados, o público-alvo típico de uma instância adicional do Pluriverso.
+- Dependência de um provedor de identidade externo (ou a operação de um IdP próprio) — contradiz a auto-hospedagem trivial exigida por [ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md) justamente para associações de recursos limitados, o público-alvo típico de uma instância adicional do Pluriverso.
 - Complexidade de configuração (client id/secret, redirect URIs, descoberta de metadados) desproporcional a um Comitê de poucas pessoas.
 - Ponto de falha externo: a indisponibilidade do provedor de identidade bloquearia toda decisão de governança do Pluriverso, inclusive em instâncias pequenas sem equipe de TI dedicada.
 
@@ -80,14 +80,14 @@ COMMITTEE_USERS=[{"username":"comite-useflora","passwordHash":"$2b$12$SUBSTITUIR
 
 **Sem sessão.** Cada requisição se autentica de forma independente — nenhum cookie, nenhum estado de servidor associado à credencial, coerente com a natureza stateless da API REST-only ([ADR-002 local](ADR-002-api-publica-rest.md)).
 
-**Sem papéis dentro do Comitê.** Qualquer conta em `COMMITTEE_USERS` tem acesso igual a todos os endpoints de `docs/api.md` §5.2 — reflete [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) ("decisões... tomadas por consenso ou maioria qualificada"), que não distingue papéis técnicos dentro do Comitê Federado.
+**Sem papéis dentro do Comitê.** Qualquer conta em `COMMITTEE_USERS` tem acesso igual a todos os endpoints de `docs/api.md` §5.2 — reflete [ADR-004/D3](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) ("decisões... tomadas por consenso ou maioria qualificada"), que não distingue papéis técnicos dentro do Comitê Federado.
 
 ## Consequências
 ### Positivas
 - `decided_by` e `actor` são sempre atribuíveis a uma pessoa real e identificável — a auditoria de governança prometida pelo `README.md` ("o processo é auditável") fica tecnicamente sustentada, não apenas declarada.
 - Nenhuma infraestrutura nova: nenhum IdP, nenhum serviço de sessão, nenhuma tabela de usuários no índice — apenas uma variável de ambiente e uma dependência já presente na stack (`bcrypt`, [ADR-001 local](ADR-001-stack-e-framework.md)).
 - Revogação e rotação de credencial são operações de implantação (editar `COMMITTEE_USERS`, reiniciar o container), sem deploy de código nem migração de banco.
-- Compatível com a auto-hospedagem trivial exigida para qualquer instância do Pluriverso, inclusive as de associações com recursos limitados ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)).
+- Compatível com a auto-hospedagem trivial exigida para qualquer instância do Pluriverso, inclusive as de associações com recursos limitados ([ADR-009/MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)).
 
 ### Negativas
 - Sem MFA: uma senha vazada é suficiente para agir como aquela pessoa do Comitê.
@@ -100,10 +100,10 @@ COMMITTEE_USERS=[{"username":"comite-useflora","passwordHash":"$2b$12$SUBSTITUIR
 - A falta de autogestão é aceitável no volume esperado (poucas pessoas, baixa frequência de troca de senha); se isso se tornar fricção operacional relatada pelo Comitê, é sinal concreto de que a instância já cruzou o limiar de migração para OIDC acima.
 
 ## Referências
-- [ADR-006: Protocolo de Inscrição na Federação, E4 (Autenticação da Decisão do Comitê)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
-- [ADR-006: Modelo de Dados Mínimo (`decided_by`)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-006-federation-membership-protocol.md)
-- [ADR-004: Arquitetura Federada, D3 (Governança do Pluriverso: Comitê Federado)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)
-- [ADR-009: Topologia Multi-Instância do Pluriverso, MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
+- [ADR-006: Protocolo de Inscrição na Federação, E4 (Autenticação da Decisão do Comitê)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)
+- [ADR-006: Modelo de Dados Mínimo (`decided_by`)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-006-federation-membership-protocol.md)
+- [ADR-004: Arquitetura Federada, D3 (Governança do Pluriverso: Comitê Federado)](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)
+- [ADR-009: Topologia Multi-Instância do Pluriverso, MI2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-009-pluriverso-multi-instance-topology.md)
 - `docs/decisions/ADR-001-stack-e-framework.md` (Pluriverso) — dependência `bcrypt` já fixada na stack
 - `docs/decisions/ADR-002-api-publica-rest.md` (Pluriverso) — natureza REST-only e stateless da API, código `UNAUTHORIZED`
 - `docs/api.md` §5.2 (Pluriverso) — lista completa dos endpoints protegidos por este mecanismo

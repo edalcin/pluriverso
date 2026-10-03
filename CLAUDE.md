@@ -13,4 +13,4 @@ Persistência do Pluriverso = SQLite embutida via `better-sqlite3` (JSON1 + FTS5
 ao container via `SQLITE_DB_PATH` (default `/data/pluriverso.sqlite`). Ref.: ADR-008.
 Pluriverso é instanciável (não singleton): associação pode rodar instância própria, escopada aos seus
 membros, sem hierarquia entre instâncias. Ref.: ADR-009.
-Ref. gerais: Arquitetura-BioCultural/docs/architecture-decisions/ADR-005, ADR-008, ADR-009.
+Ref. gerais: Arquitetura-BioCultural/docs/tecnico/architecture-decisions/ADR-005, ADR-008, ADR-009.

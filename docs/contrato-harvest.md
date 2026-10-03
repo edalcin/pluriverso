@@ -1,12 +1,12 @@
 # Contrato de Harvest
 
-Este documento é lido por dois públicos: pelos **membros da federação**, que precisam implementar e manter o endpoint de harvest para serem coletáveis pelo Pluriverso; e pelo **implementador do Pluriverso**, que precisa escrever o coletor (`HarvestClient` + `RecordIndexer` + `ConceptHarvester`, ver [`arquitetura.md`](arquitetura.md)) contra este contrato. A Arquitetura BioCultural fixa o formato do endpoint ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md)); este documento fixa tudo o que o ADR não cobre — comportamento do coletor, modos de coleta, resiliência, o perfil de campos extraído e o contrato (ainda não normativo) de harvest de conceitos.
+Este documento é lido por dois públicos: pelos **membros da federação**, que precisam implementar e manter o endpoint de harvest para serem coletáveis pelo Pluriverso; e pelo **implementador do Pluriverso**, que precisa escrever o coletor (`HarvestClient` + `RecordIndexer` + `ConceptHarvester`, ver [`arquitetura.md`](arquitetura.md)) contra este contrato. A Arquitetura BioCultural fixa o formato do endpoint ([ADR-004/D6](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md)); este documento fixa tudo o que o ADR não cobre — comportamento do coletor, modos de coleta, resiliência, o perfil de campos extraído e o contrato (ainda não normativo) de harvest de conceitos.
 
 ---
 
 ## §1 — Contrato de registros (cliente)
 
-Reproduzido verbatim de [ADR-004/D6 — Protocolo de Publicação: Harvest REST Paginado](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md), decisão que vincula todo membro da federação ([ADR-004/D1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) — harvest periódico via REST paginado, sem pull em tempo real, sem push do membro):
+Reproduzido verbatim de [ADR-004/D6 — Protocolo de Publicação: Harvest REST Paginado](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md), decisão que vincula todo membro da federação ([ADR-004/D1](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) — harvest periódico via REST paginado, sem pull em tempo real, sem push do membro):
 
 ```
 GET /api/federation/records
@@ -75,13 +75,13 @@ Defaults globais: `HARVEST_CRON_INCREMENTAL='0 3 * * *'`, `HARVEST_CRON_FULL='0 
 
 **Desativação por falhas consecutivas.** Um membro que acumula `HARVEST_MAX_FAILURES` (default `5`) runs `failed` consecutivas tem `members.doc.harvest_enabled` automaticamente definido como `false`, e uma entrada é gravada em `audit_log` (`action: "harvest_disabled"`). O agendador para de tentar coletar aquele membro. Reativação (`harvest_enabled=true`) é uma ação humana do Comitê Federado, via `PATCH /api/federation/members/{member_id}` (ver [`api.md`](api.md)) — não há retomada automática, para evitar que o coletor martele indefinidamente um membro fora do ar.
 
-**Concorrência.** No máximo 1 run por membro simultaneamente — lock por `member_id` mantido em memória pelo `HarvestScheduler`; um disparo manual (`POST /api/federation/members/{member_id}/harvest`) durante uma run agendada em curso para o mesmo membro é rejeitado, não enfileirado. No máximo `HARVEST_MAX_CONCURRENT` (default `3`) runs simultâneas no total, entre membros diferentes. Isso limita a carga de rede e, principalmente, respeita a arquitetura de escritor único do SQLite ([ADR-008](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-008-pluriverso-database-engine.md)): cada página processada gera uma transação curta de escrita ao final do seu processamento, e transações curtas e frequentes de múltiplas runs concorrentes mantêm o `busy_timeout=5000` (ADR-008/DB2) como margem suficiente em vez de gargalo.
+**Concorrência.** No máximo 1 run por membro simultaneamente — lock por `member_id` mantido em memória pelo `HarvestScheduler`; um disparo manual (`POST /api/federation/members/{member_id}/harvest`) durante uma run agendada em curso para o mesmo membro é rejeitado, não enfileirado. No máximo `HARVEST_MAX_CONCURRENT` (default `3`) runs simultâneas no total, entre membros diferentes. Isso limita a carga de rede e, principalmente, respeita a arquitetura de escritor único do SQLite ([ADR-008](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-008-pluriverso-database-engine.md)): cada página processada gera uma transação curta de escrita ao final do seu processamento, e transações curtas e frequentes de múltiplas runs concorrentes mantêm o `busy_timeout=5000` (ADR-008/DB2) como margem suficiente em vez de gargalo.
 
 ---
 
 ## §4 — Perfil Mínimo de Publicação
 
-O Pluriverso extrai de `data` um conjunto fixo de campos — o **perfil** — para alimentar filtros estruturados, facetas e âncoras de mapeamento semântico. Os caminhos de origem em `data` seguem [ADR-003 — Modelo de Dados](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-003-data-model.md), cujo status é `Proposto` na Arquitetura BioCultural — por isso a tabela abaixo é citada como **perfil de referência**, não como obrigação contratual que o membro precise satisfazer para ser coletado.
+O Pluriverso extrai de `data` um conjunto fixo de campos — o **perfil** — para alimentar filtros estruturados, facetas e âncoras de mapeamento semântico. Os caminhos de origem em `data` seguem [ADR-003 — Modelo de Dados](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-003-data-model.md), cujo status é `Proposto` na Arquitetura BioCultural — por isso a tabela abaixo é citada como **perfil de referência**, não como obrigação contratual que o membro precise satisfazer para ser coletado.
 
 | Campo do perfil | Caminho em `data` (ADR-003) | Uso no Pluriverso |
 |---|---|---|
@@ -103,7 +103,7 @@ O Pluriverso extrai de `data` um conjunto fixo de campos — o **perfil** — pa
 
 A decisão está registrada formalmente em [`docs/decisions/ADR-005-perfil-minimo-de-publicacao.md`](decisions/ADR-005-perfil-minimo-de-publicacao.md) (a análise de opções não é repetida aqui — só a regra operacional):
 
-Extração **best-effort**. Campo ausente em `data` ⇒ o registro **é indexado do mesmo jeito**; apenas o filtro/faceta correspondente àquele campo específico não responde por ele. O coletor **nunca** rejeita um registro por campo do perfil faltando — rejeitar equivaleria a o Pluriverso impor um esquema a um membro soberano, contrariando [ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) e o princípio C.A.R.E. *Authority to Control*.
+Extração **best-effort**. Campo ausente em `data` ⇒ o registro **é indexado do mesmo jeito**; apenas o filtro/faceta correspondente àquele campo específico não responde por ele. O coletor **nunca** rejeita um registro por campo do perfil faltando — rejeitar equivaleria a o Pluriverso impor um esquema a um membro soberano, contrariando [ADR-004/D2](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) e o princípio C.A.R.E. *Authority to Control*.
 
 O `data` original é armazenado **íntegro**, sem perda, em paralelo ao `profile` extraído — os dois convivem no mesmo registro em `records`. O `profile` é derivado e descartável: pode ser reconstruído por reindexação a partir de `data`, sem precisar de um novo harvest contra o membro, caso o perfil de campos extraídos seja ampliado no futuro.
 
@@ -113,7 +113,7 @@ Um registro sem **nenhum** dos campos do perfil ainda entra no índice normalmen
 
 ## §5 — Contrato de conceitos
 
-A tabela "Necessidades de Implementação por Componente" de [ADR-004](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md) exige que o BioCultTermos de cada membro "publique `ConceptScheme` via endpoint para harvest pelo Pluriverso" — mas nenhum ADR aceito especifica o formato desse endpoint. A especificação abaixo é a materialização mínima dessa exigência, no mesmo formato do contrato de registros (§1 / ADR-004/D6):
+A tabela "Necessidades de Implementação por Componente" de [ADR-004](https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md) exige que o BioCultTermos de cada membro "publique `ConceptScheme` via endpoint para harvest pelo Pluriverso" — mas nenhum ADR aceito especifica o formato desse endpoint. A especificação abaixo é a materialização mínima dessa exigência, no mesmo formato do contrato de registros (§1 / ADR-004/D6):
 
 ```
 GET /api/federation/concepts?page=<int>&size=<int>&updated_since=<ISO>

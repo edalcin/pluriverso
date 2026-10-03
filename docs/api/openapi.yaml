@@ -16,7 +16,7 @@ info:
     url: "https://github.com/edalcin/pluriverso/blob/main/LICENSE"
 externalDocs:
   description: ADR-004/D6 — Arquitetura Federada, Protocolo de Publicação
-  url: https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/architecture-decisions/ADR-004-federated-architecture.md
+  url: https://github.com/edalcin/Arquitetura-BioCultural/blob/main/docs/tecnico/architecture-decisions/ADR-004-federated-architecture.md
 
 servers:
   - url: "{baseUrl}"
