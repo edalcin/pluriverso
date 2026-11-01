@@ -1,0 +1,806 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "pluriverso_core_services",
+        "label": "Pluriverso Core Services",
+        "nodes": [
+          "pluriverso_search_service",
+          "pluriverso_membership_service",
+          "pluriverso_mapping_service",
+          "pluriverso_harvest_scheduler"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.9,
+        "source_file": "docs/arquitetura.md"
+      },
+      {
+        "id": "pluriverso_persistence_layer",
+        "label": "Pluriverso Persistence Layer",
+        "nodes": [
+          "sqlite_db",
+          "pluriverso_record_indexer",
+          "pluriverso_audit_service",
+          "pluriverso_purge_service"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.8,
+        "source_file": "docs/modelo-de-dados.md"
+      },
+      {
+        "id": "pluriverso_core_architecture",
+        "label": "Pluriverso Core Architecture",
+        "nodes": [
+          "docs_decisions_adr_001_stack_e_framework",
+          "docs_decisions_adr_002_api_publica_rest",
+          "docs_decisions_adr_003_autenticacao_do_comite"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0
+      },
+      {
+        "id": "semantic_search_flow",
+        "label": "Semantic Search Flow",
+        "nodes": [
+          "docs_decisions_adr_004_expansao_semantica_skos",
+          "docs_decisions_adr_005_perfil_minimo_de_publicacao",
+          "skos_semantic_expansion"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.9
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "proximosPassos.md",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_proximospassos",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "proximospassos.md"
+    },
+    {
+      "label": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_proximospassos_pr\u00f3ximos_passos_pluriverso",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "proximos passos \u2014 pluriverso"
+    },
+    {
+      "label": "1. Estado",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "docs_proximospassos_1_estado",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "1. estado"
+    },
+    {
+      "label": "2. Pend\u00eancias",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "docs_proximospassos_2_pend\u00eancias",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "2. pendencias"
+    },
+    {
+      "label": "Depend\u00eancias externas a este reposit\u00f3rio",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "docs_proximospassos_depend\u00eancias_externas_a_este_reposit\u00f3rio",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "dependencias externas a este repositorio"
+    },
+    {
+      "label": "3. Onde est\u00e1 cada coisa",
+      "file_type": "document",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "docs_proximospassos_3_onde_est\u00e1_cada_coisa",
+      "community": 15,
+      "community_name": "Pr\u00f3ximos Passos \u2014 Pluriverso",
+      "norm_label": "3. onde esta cada coisa"
+    },
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "community": 7,
+      "norm_label": "claude.md",
+      "community_name": "CLAUDE.md",
+      "id": "claude_md"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "community": 2,
+      "norm_label": "readme.md",
+      "community_name": "README.md",
+      "id": "readme_md"
+    },
+    {
+      "label": "API do Pluriverso",
+      "file_type": "document",
+      "source_file": "docs/api.md",
+      "community": 1,
+      "norm_label": "api do pluriverso",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "docs_api"
+    },
+    {
+      "label": "Arquitetura do Pluriverso (C4)",
+      "file_type": "document",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "arquitetura do pluriverso (c4)",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "docs_arquitetura"
+    },
+    {
+      "label": "Busca Sem\u00e2ntica",
+      "file_type": "document",
+      "source_file": "docs/busca-semantica.md",
+      "community": 4,
+      "norm_label": "busca semantica",
+      "community_name": "SearchService",
+      "id": "docs_busca_semantica"
+    },
+    {
+      "label": "Contrato de Harvest",
+      "file_type": "document",
+      "source_file": "docs/contrato-harvest.md",
+      "community": 8,
+      "norm_label": "contrato de harvest",
+      "community_name": "Contrato de Harvest",
+      "id": "docs_contrato_harvest"
+    },
+    {
+      "label": "Governan\u00e7a e Seguran\u00e7a",
+      "file_type": "document",
+      "source_file": "docs/governanca-e-seguranca.md",
+      "community": 9,
+      "norm_label": "governanca e seguranca",
+      "community_name": "Governan\u00e7a e Seguran\u00e7a",
+      "id": "docs_governanca_e_seguranca"
+    },
+    {
+      "label": "Modelo de Dados",
+      "file_type": "document",
+      "source_file": "docs/modelo-de-dados.md",
+      "community": 3,
+      "norm_label": "modelo de dados",
+      "community_name": "HarvestClient",
+      "id": "docs_modelo_de_dados"
+    },
+    {
+      "label": "Opera\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "docs/operacao.md",
+      "community": 10,
+      "norm_label": "operacao",
+      "community_name": "Opera\u00e7\u00e3o",
+      "id": "docs_operacao"
+    },
+    {
+      "label": "Roadmap",
+      "file_type": "document",
+      "source_file": "docs/roadmap.md",
+      "community": 12,
+      "norm_label": "roadmap",
+      "community_name": "Roadmap",
+      "id": "docs_roadmap"
+    },
+    {
+      "label": "Princ\u00edpios do desenvolvimento",
+      "file_type": "document",
+      "source_file": "docs/principios.md",
+      "community": 11,
+      "norm_label": "principios do desenvolvimento",
+      "community_name": "Princ\u00edpios do desenvolvimento",
+      "id": "docs_principios"
+    },
+    {
+      "label": "Arquitetura BioCultural",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "community": 2,
+      "norm_label": "arquitetura biocultural",
+      "community_name": "README.md",
+      "id": "arquitetura_biocultural"
+    },
+    {
+      "label": "BioCultDB",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "community": 2,
+      "norm_label": "biocultdb",
+      "community_name": "README.md",
+      "id": "biocult_db"
+    },
+    {
+      "label": "BioCultTermos",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "community": 2,
+      "norm_label": "bioculttermos",
+      "community_name": "README.md",
+      "id": "biocult_termos"
+    },
+    {
+      "label": "PublicApi",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "publicapi",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "pluriverso_public_api"
+    },
+    {
+      "label": "CommitteeApi",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "committeeapi",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "pluriverso_committee_api"
+    },
+    {
+      "label": "WebUi",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 14,
+      "norm_label": "webui",
+      "community_name": "WebUi",
+      "id": "pluriverso_web_ui"
+    },
+    {
+      "label": "HarvestScheduler",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "harvestscheduler",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "pluriverso_harvest_scheduler"
+    },
+    {
+      "label": "HarvestClient",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 3,
+      "norm_label": "harvestclient",
+      "community_name": "HarvestClient",
+      "id": "pluriverso_harvest_client"
+    },
+    {
+      "label": "RecordIndexer",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 3,
+      "norm_label": "recordindexer",
+      "community_name": "HarvestClient",
+      "id": "pluriverso_record_indexer"
+    },
+    {
+      "label": "SearchService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 4,
+      "norm_label": "searchservice",
+      "community_name": "SearchService",
+      "id": "pluriverso_search_service"
+    },
+    {
+      "label": "SemanticExpander",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 4,
+      "norm_label": "semanticexpander",
+      "community_name": "SearchService",
+      "id": "pluriverso_semantic_expander"
+    },
+    {
+      "label": "MembershipService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "membershipservice",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "pluriverso_membership_service"
+    },
+    {
+      "label": "ProbeService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 1,
+      "norm_label": "probeservice",
+      "community_name": "Arquitetura do Pluriverso (C4)",
+      "id": "pluriverso_probe_service"
+    },
+    {
+      "label": "MappingService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 13,
+      "norm_label": "mappingservice",
+      "community_name": "MappingService",
+      "id": "pluriverso_mapping_service"
+    },
+    {
+      "label": "PurgeService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 6,
+      "norm_label": "purgeservice",
+      "community_name": "AuditService",
+      "id": "pluriverso_purge_service"
+    },
+    {
+      "label": "AuditService",
+      "file_type": "code",
+      "source_file": "docs/arquitetura.md",
+      "community": 6,
+      "norm_label": "auditservice",
+      "community_name": "AuditService",
+      "id": "pluriverso_audit_service"
+    },
+    {
+      "label": "SQLite (better-sqlite3)",
+      "file_type": "concept",
+      "source_file": "docs/modelo-de-dados.md",
+      "community": 3,
+      "norm_label": "sqlite (better-sqlite3)",
+      "community_name": "HarvestClient",
+      "id": "sqlite_db"
+    },
+    {
+      "label": "OpenAPI Specification",
+      "file_type": "code",
+      "source_file": "docs/api/openapi.yaml",
+      "community": 0,
+      "norm_label": "openapi specification",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "docs_api_openapi"
+    },
+    {
+      "label": "ADR-001: Stack e Framework",
+      "file_type": "document",
+      "source_file": "docs/decisions/ADR-001-stack-e-framework.md",
+      "community": 0,
+      "norm_label": "adr-001: stack e framework",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "docs_decisions_adr_001_stack_e_framework"
+    },
+    {
+      "label": "ADR-002: API P\u00fablica REST",
+      "file_type": "document",
+      "source_file": "docs/decisions/ADR-002-api-publica-rest.md",
+      "community": 0,
+      "norm_label": "adr-002: api publica rest",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "docs_decisions_adr_002_api_publica_rest"
+    },
+    {
+      "label": "ADR-003: Autentica\u00e7\u00e3o do Comit\u00ea",
+      "file_type": "document",
+      "source_file": "docs/decisions/ADR-003-autenticacao-do-comite.md",
+      "community": 0,
+      "norm_label": "adr-003: autenticacao do comite",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "docs_decisions_adr_003_autenticacao_do_comite"
+    },
+    {
+      "label": "ADR-004: Expans\u00e3o Sem\u00e2ntica SKOS",
+      "file_type": "document",
+      "source_file": "docs/decisions/ADR-004-expansao-semantica-skos.md",
+      "community": 5,
+      "norm_label": "adr-004: expansao semantica skos",
+      "community_name": "ADR-004: Expans\u00e3o Sem\u00e2ntica SKOS",
+      "id": "docs_decisions_adr_004_expansao_semantica_skos"
+    },
+    {
+      "label": "ADR-005: Perfil M\u00ednimo de Publica\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "docs/decisions/ADR-005-perfil-minimo-de-publicacao.md",
+      "community": 0,
+      "norm_label": "adr-005: perfil minimo de publicacao",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "docs_decisions_adr_005_perfil_minimo_de_publicacao"
+    },
+    {
+      "label": "Express.js",
+      "file_type": "concept",
+      "source_file": "docs/decisions/ADR-001-stack-e-framework.md",
+      "community": 0,
+      "norm_label": "express.js",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "express_js"
+    },
+    {
+      "label": "better-sqlite3",
+      "file_type": "concept",
+      "source_file": "docs/decisions/ADR-001-stack-e-framework.md",
+      "community": 0,
+      "norm_label": "better-sqlite3",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "better_sqlite3"
+    },
+    {
+      "label": "SKOS Semantic Expansion",
+      "file_type": "concept",
+      "source_file": "docs/decisions/ADR-004-expansao-semantica-skos.md",
+      "community": 5,
+      "norm_label": "skos semantic expansion",
+      "community_name": "ADR-004: Expans\u00e3o Sem\u00e2ntica SKOS",
+      "id": "skos_semantic_expansion"
+    },
+    {
+      "label": "requireCommittee Middleware",
+      "file_type": "code",
+      "source_file": "docs/decisions/ADR-003-autenticacao-do-comite.md",
+      "community": 0,
+      "norm_label": "requirecommittee middleware",
+      "community_name": "ADR-001: Stack e Framework",
+      "id": "committee_auth_middleware"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_proximospassos",
+      "target": "docs_proximospassos_pr\u00f3ximos_passos_pluriverso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_proximospassos_pr\u00f3ximos_passos_pluriverso",
+      "target": "docs_proximospassos_1_estado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_proximospassos_pr\u00f3ximos_passos_pluriverso",
+      "target": "docs_proximospassos_2_pend\u00eancias",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_proximospassos_pr\u00f3ximos_passos_pluriverso",
+      "target": "docs_proximospassos_3_onde_est\u00e1_cada_coisa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/proximosPassos.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_proximospassos_2_pend\u00eancias",
+      "target": "docs_proximospassos_depend\u00eancias_externas_a_este_reposit\u00f3rio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source": "readme_md",
+      "target": "arquitetura_biocultural"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source": "readme_md",
+      "target": "biocult_db"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source": "readme_md",
+      "target": "biocult_termos"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "docs/api.md",
+      "source": "docs_api",
+      "target": "pluriverso_committee_api"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "docs/api.md",
+      "source": "docs_api",
+      "target": "pluriverso_public_api"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "docs_arquitetura",
+      "target": "pluriverso_committee_api"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "docs_arquitetura",
+      "target": "pluriverso_harvest_scheduler"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "docs_arquitetura",
+      "target": "pluriverso_public_api"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "docs_arquitetura",
+      "target": "pluriverso_search_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/busca-semantica.md",
+      "source": "docs_busca_semantica",
+      "target": "pluriverso_search_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/busca-semantica.md",
+      "source": "docs_busca_semantica",
+      "target": "pluriverso_semantic_expander"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/modelo-de-dados.md",
+      "source": "docs_modelo_de_dados",
+      "target": "sqlite_db"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_public_api",
+      "target": "pluriverso_search_service"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_committee_api",
+      "target": "pluriverso_membership_service"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_harvest_scheduler",
+      "target": "pluriverso_harvest_client"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_harvest_client",
+      "target": "pluriverso_record_indexer"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_record_indexer",
+      "target": "sqlite_db"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_search_service",
+      "target": "pluriverso_semantic_expander"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_membership_service",
+      "target": "pluriverso_probe_service"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/arquitetura.md",
+      "source": "pluriverso_purge_service",
+      "target": "pluriverso_audit_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/api/openapi.yaml",
+      "source": "docs_api_openapi",
+      "target": "docs_decisions_adr_002_api_publica_rest"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "docs/decisions/ADR-005-perfil-minimo-de-publicacao.md",
+      "source": "docs_decisions_adr_005_perfil_minimo_de_publicacao",
+      "target": "docs_api_openapi"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/decisions/ADR-001-stack-e-framework.md",
+      "source": "docs_decisions_adr_001_stack_e_framework",
+      "target": "better_sqlite3"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/decisions/ADR-001-stack-e-framework.md",
+      "source": "docs_decisions_adr_001_stack_e_framework",
+      "target": "express_js"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/decisions/ADR-002-api-publica-rest.md",
+      "source": "docs_decisions_adr_002_api_publica_rest",
+      "target": "docs_decisions_adr_001_stack_e_framework"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/decisions/ADR-003-autenticacao-do-comite.md",
+      "source": "docs_decisions_adr_003_autenticacao_do_comite",
+      "target": "docs_decisions_adr_002_api_publica_rest"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "docs/decisions/ADR-003-autenticacao-do-comite.md",
+      "source": "docs_decisions_adr_003_autenticacao_do_comite",
+      "target": "committee_auth_middleware"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/decisions/ADR-004-expansao-semantica-skos.md",
+      "source": "docs_decisions_adr_004_expansao_semantica_skos",
+      "target": "skos_semantic_expansion"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "pluriverso_core_services",
+      "label": "Pluriverso Core Services",
+      "nodes": [
+        "pluriverso_search_service",
+        "pluriverso_membership_service",
+        "pluriverso_mapping_service",
+        "pluriverso_harvest_scheduler"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.9,
+      "source_file": "docs/arquitetura.md"
+    },
+    {
+      "id": "pluriverso_persistence_layer",
+      "label": "Pluriverso Persistence Layer",
+      "nodes": [
+        "sqlite_db",
+        "pluriverso_record_indexer",
+        "pluriverso_audit_service",
+        "pluriverso_purge_service"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "docs/modelo-de-dados.md"
+    },
+    {
+      "id": "pluriverso_core_architecture",
+      "label": "Pluriverso Core Architecture",
+      "nodes": [
+        "docs_decisions_adr_001_stack_e_framework",
+        "docs_decisions_adr_002_api_publica_rest",
+        "docs_decisions_adr_003_autenticacao_do_comite"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "semantic_search_flow",
+      "label": "Semantic Search Flow",
+      "nodes": [
+        "docs_decisions_adr_004_expansao_semantica_skos",
+        "docs_decisions_adr_005_perfil_minimo_de_publicacao",
+        "skos_semantic_expansion"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9
+    }
+  ],
+  "built_at_commit": "153a15d7186b59627bb40afd4fe48c8c1d8b8370"
+}

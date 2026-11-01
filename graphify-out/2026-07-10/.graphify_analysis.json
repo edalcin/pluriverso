@@ -1,0 +1,99 @@
+{
+  "communities": {
+    "0": [
+      "readme_care_principles",
+      "readme_central_index",
+      "readme_etnoarquitetura",
+      "readme_etnorelatos",
+      "readme_etnotermos",
+      "readme_harvest_scheduler",
+      "readme_pluriverso",
+      "readme_skos_mapping_layer"
+    ],
+    "1": [
+      "readme_etnodb",
+      "readme_etnopapers"
+    ],
+    "2": [
+      "readme_governance_interface"
+    ],
+    "3": [
+      "readme_public_api"
+    ]
+  },
+  "cohesion": {
+    "0": 0.25,
+    "1": 1.0,
+    "2": 1.0,
+    "3": 1.0
+  },
+  "gods": [
+    {
+      "id": "readme_pluriverso",
+      "label": "Pluriverso",
+      "degree": 8
+    },
+    {
+      "id": "readme_etnodb",
+      "label": "etnoDB",
+      "degree": 2
+    },
+    {
+      "id": "readme_etnoarquitetura",
+      "label": "EtnoArquitetura",
+      "degree": 1
+    },
+    {
+      "id": "readme_etnopapers",
+      "label": "etnopapers",
+      "degree": 1
+    },
+    {
+      "id": "readme_etnorelatos",
+      "label": "etnoRelatos",
+      "degree": 1
+    },
+    {
+      "id": "readme_etnotermos",
+      "label": "etnoTermos",
+      "degree": 1
+    },
+    {
+      "id": "readme_harvest_scheduler",
+      "label": "Harvest Scheduler",
+      "degree": 1
+    },
+    {
+      "id": "readme_central_index",
+      "label": "\u00cdndice Central",
+      "degree": 1
+    },
+    {
+      "id": "readme_skos_mapping_layer",
+      "label": "Camada de Mapeamento Sem\u00e2ntico (SKOS)",
+      "degree": 1
+    },
+    {
+      "id": "readme_care_principles",
+      "label": "Princ\u00edpios CARE",
+      "degree": 1
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Pluriverso",
+      "target": "etnoDB",
+      "source_files": [
+        "README.md",
+        "README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "note": "Bridges community 0 \u2192 community 1"
+    }
+  ],
+  "tokens": {
+    "input": 2617,
+    "output": 1522
+  }
+}

@@ -1,0 +1,451 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude",
+      "community": 3,
+      "norm_label": "claude.md"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_graphify",
+      "community": 3,
+      "norm_label": "graphify"
+    },
+    {
+      "label": "Arquitetura v3.1 \u2014 Persist\u00eancia",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "claude_arquitetura_v3_1_persist\u00eancia",
+      "community": 3,
+      "norm_label": "arquitetura v3.1 \u2014 persistencia"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme",
+      "community": 0,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "Pluriverso",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme_pluriverso",
+      "community": 0,
+      "norm_label": "pluriverso"
+    },
+    {
+      "label": "O que \u00e9 o Pluriverso?",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "readme_o_que_\u00e9_o_pluriverso",
+      "community": 0,
+      "norm_label": "o que e o pluriverso?"
+    },
+    {
+      "label": "Posi\u00e7\u00e3o na Arquitetura Federada",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "readme_posi\u00e7\u00e3o_na_arquitetura_federada",
+      "community": 0,
+      "norm_label": "posicao na arquitetura federada"
+    },
+    {
+      "label": "Responsabilidades",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "readme_responsabilidades",
+      "community": 1,
+      "norm_label": "responsabilidades"
+    },
+    {
+      "label": "1. Harvest Peri\u00f3dico",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "readme_1_harvest_peri\u00f3dico",
+      "community": 1,
+      "norm_label": "1. harvest periodico"
+    },
+    {
+      "label": "2. \u00cdndice Central",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "readme_2_\u00edndice_central",
+      "community": 1,
+      "norm_label": "2. indice central"
+    },
+    {
+      "label": "3. Camada de Mapeamento Sem\u00e2ntico",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L73",
+      "_origin": "ast",
+      "id": "readme_3_camada_de_mapeamento_sem\u00e2ntico",
+      "community": 1,
+      "norm_label": "3. camada de mapeamento semantico"
+    },
+    {
+      "label": "4. API P\u00fablica Unificada",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "readme_4_api_p\u00fablica_unificada",
+      "community": 1,
+      "norm_label": "4. api publica unificada"
+    },
+    {
+      "label": "5. Interface de Governan\u00e7a",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "readme_5_interface_de_governan\u00e7a",
+      "community": 1,
+      "norm_label": "5. interface de governanca"
+    },
+    {
+      "label": "Princ\u00edpios de Design",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "readme_princ\u00edpios_de_design",
+      "community": 2,
+      "norm_label": "principios de design"
+    },
+    {
+      "label": "Soberania dos Membros",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "readme_soberania_dos_membros",
+      "community": 2,
+      "norm_label": "soberania dos membros"
+    },
+    {
+      "label": "Remo\u00e7\u00e3o Imediata",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "readme_remo\u00e7\u00e3o_imediata",
+      "community": 2,
+      "norm_label": "remocao imediata"
+    },
+    {
+      "label": "Transpar\u00eancia de Origem",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "readme_transpar\u00eancia_de_origem",
+      "community": 2,
+      "norm_label": "transparencia de origem"
+    },
+    {
+      "label": "CARE na Pr\u00e1tica",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "readme_care_na_pr\u00e1tica",
+      "community": 2,
+      "norm_label": "care na pratica"
+    },
+    {
+      "label": "Necessidades de Implementa\u00e7\u00e3o (v3.1)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L128",
+      "_origin": "ast",
+      "id": "readme_necessidades_de_implementa\u00e7\u00e3o_v3_1",
+      "community": 0,
+      "norm_label": "necessidades de implementacao (v3.1)"
+    },
+    {
+      "label": "Rela\u00e7\u00e3o com os Demais Componentes",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L143",
+      "_origin": "ast",
+      "id": "readme_rela\u00e7\u00e3o_com_os_demais_componentes",
+      "community": 0,
+      "norm_label": "relacao com os demais componentes"
+    },
+    {
+      "label": "Documenta\u00e7\u00e3o da Arquitetura",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L155",
+      "_origin": "ast",
+      "id": "readme_documenta\u00e7\u00e3o_da_arquitetura",
+      "community": 0,
+      "norm_label": "documentacao da arquitetura"
+    },
+    {
+      "label": "Licen\u00e7a",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L164",
+      "_origin": "ast",
+      "id": "readme_licen\u00e7a",
+      "community": 0,
+      "norm_label": "licenca"
+    },
+    {
+      "label": "Contato",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "readme_contato",
+      "community": 0,
+      "norm_label": "contato"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "claude",
+      "target": "claude_arquitetura_v3_1_persist\u00eancia",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude",
+      "target": "claude_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_pluriverso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_contato",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L155",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_documenta\u00e7\u00e3o_da_arquitetura",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_licen\u00e7a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_necessidades_de_implementa\u00e7\u00e3o_v3_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_o_que_\u00e9_o_pluriverso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_posi\u00e7\u00e3o_na_arquitetura_federada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L103",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_princ\u00edpios_de_design",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_rela\u00e7\u00e3o_com_os_demais_componentes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_responsabilidades",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "readme_responsabilidades",
+      "target": "readme_1_harvest_peri\u00f3dico",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "readme_responsabilidades",
+      "target": "readme_2_\u00edndice_central",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "readme_responsabilidades",
+      "target": "readme_3_camada_de_mapeamento_sem\u00e2ntico",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "readme_responsabilidades",
+      "target": "readme_4_api_p\u00fablica_unificada",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "readme_responsabilidades",
+      "target": "readme_5_interface_de_governan\u00e7a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "readme_princ\u00edpios_de_design",
+      "target": "readme_care_na_pr\u00e1tica",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "readme_princ\u00edpios_de_design",
+      "target": "readme_remo\u00e7\u00e3o_imediata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "readme_princ\u00edpios_de_design",
+      "target": "readme_soberania_dos_membros",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "readme_princ\u00edpios_de_design",
+      "target": "readme_transpar\u00eancia_de_origem",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "38f86a855c34364625a8c695d6b2d38bfaa0bb6d"
+}

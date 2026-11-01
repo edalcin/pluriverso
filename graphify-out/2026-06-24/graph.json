@@ -1,0 +1,319 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "federation_ecosystem",
+        "label": "Ecossistema de Federa\u00e7\u00e3o CTA",
+        "nodes": [
+          "readme_pluriverso",
+          "readme_etnodb",
+          "readme_etnorelatos",
+          "readme_etnotermos"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "README.md"
+      },
+      {
+        "id": "pluriverso_internal_components",
+        "label": "Componentes Internos do Pluriverso",
+        "nodes": [
+          "readme_harvest_scheduler",
+          "readme_central_index",
+          "readme_skos_mapping_layer",
+          "readme_public_api",
+          "readme_governance_interface"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "README.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Pluriverso",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_pluriverso",
+      "community": 0,
+      "norm_label": "pluriverso"
+    },
+    {
+      "label": "EtnoArquitetura",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": "https://github.com/edalcin/etnoArquitetura",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_etnoarquitetura",
+      "community": 0,
+      "norm_label": "etnoarquitetura"
+    },
+    {
+      "label": "etnoDB",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": "https://github.com/edalcin/etnoDB",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_etnodb",
+      "community": 1,
+      "norm_label": "etnodb"
+    },
+    {
+      "label": "etnopapers",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": "https://github.com/edalcin/etnopapers",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_etnopapers",
+      "community": 1,
+      "norm_label": "etnopapers"
+    },
+    {
+      "label": "etnoRelatos",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_etnorelatos",
+      "community": 0,
+      "norm_label": "etnorelatos"
+    },
+    {
+      "label": "etnoTermos",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": "https://github.com/edalcin/etnotermos",
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_etnotermos",
+      "community": 0,
+      "norm_label": "etnotermos"
+    },
+    {
+      "label": "Harvest Scheduler",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_harvest_scheduler",
+      "community": 0,
+      "norm_label": "harvest scheduler"
+    },
+    {
+      "label": "\u00cdndice Central",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_central_index",
+      "community": 0,
+      "norm_label": "indice central"
+    },
+    {
+      "label": "Camada de Mapeamento Sem\u00e2ntico (SKOS)",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_skos_mapping_layer",
+      "community": 0,
+      "norm_label": "camada de mapeamento semantico (skos)"
+    },
+    {
+      "label": "API P\u00fablica Unificada",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_public_api",
+      "community": 3,
+      "norm_label": "api publica unificada"
+    },
+    {
+      "label": "Interface de Governan\u00e7a",
+      "file_type": "code",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_governance_interface",
+      "community": 2,
+      "norm_label": "interface de governanca"
+    },
+    {
+      "label": "Princ\u00edpios CARE",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_care_principles",
+      "community": 0,
+      "norm_label": "principios care"
+    }
+  ],
+  "links": [
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_etnodb"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_etnorelatos"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_care_principles"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_central_index"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_etnoarquitetura"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_etnotermos"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_harvest_scheduler"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_pluriverso",
+      "target": "readme_skos_mapping_layer"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_etnopapers",
+      "target": "readme_etnodb"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "federation_ecosystem",
+      "label": "Ecossistema de Federa\u00e7\u00e3o CTA",
+      "nodes": [
+        "readme_pluriverso",
+        "readme_etnodb",
+        "readme_etnorelatos",
+        "readme_etnotermos"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md"
+    },
+    {
+      "id": "pluriverso_internal_components",
+      "label": "Componentes Internos do Pluriverso",
+      "nodes": [
+        "readme_harvest_scheduler",
+        "readme_central_index",
+        "readme_skos_mapping_layer",
+        "readme_public_api",
+        "readme_governance_interface"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md"
+    }
+  ],
+  "built_at_commit": "a78a18a1406bb0a949560a64d4c80c18b7472d72"
+}

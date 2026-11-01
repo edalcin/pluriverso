@@ -1,0 +1,92 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1782483197.9675424,
+    "ast_hash": "7bf81dca0376bde3a32244b82bc7cbc0",
+    "semantic_hash": "7bf81dca0376bde3a32244b82bc7cbc0"
+  },
+  "CLAUDE.md": {
+    "mtime": 1785594846.7558608,
+    "ast_hash": "70f8277943cb6cd48a198a7f274e1a13",
+    "semantic_hash": "70f8277943cb6cd48a198a7f274e1a13"
+  },
+  "README.md": {
+    "mtime": 1785500457.6036994,
+    "ast_hash": "7f638bc2d3ec12d591ce367b5f120dc3",
+    "semantic_hash": "7f638bc2d3ec12d591ce367b5f120dc3"
+  },
+  "docs/api.md": {
+    "mtime": 1785499376.846566,
+    "ast_hash": "11d48e3a05902f0c67563eb39ea37c42",
+    "semantic_hash": "11d48e3a05902f0c67563eb39ea37c42"
+  },
+  "docs/api/openapi.yaml": {
+    "mtime": 1785499476.1918573,
+    "ast_hash": "b3d6022b9ded07e90ffc77d19a1b36cc",
+    "semantic_hash": "b3d6022b9ded07e90ffc77d19a1b36cc"
+  },
+  "docs/arquitetura.md": {
+    "mtime": 1785499196.5713859,
+    "ast_hash": "0ce2d0613064e07752eea037bb2e8ddc",
+    "semantic_hash": "0ce2d0613064e07752eea037bb2e8ddc"
+  },
+  "docs/busca-semantica.md": {
+    "mtime": 1785499511.4152336,
+    "ast_hash": "9a452657290b9b1b1c9202f4210f84f5",
+    "semantic_hash": "9a452657290b9b1b1c9202f4210f84f5"
+  },
+  "docs/contrato-harvest.md": {
+    "mtime": 1785498822.4859824,
+    "ast_hash": "0acdf915989e869416da4f67338b7691",
+    "semantic_hash": "0acdf915989e869416da4f67338b7691"
+  },
+  "docs/decisions/ADR-001-stack-e-framework.md": {
+    "mtime": 1785498787.4685006,
+    "ast_hash": "c18352985c713d7b6c582b4a8f2593ae",
+    "semantic_hash": "c18352985c713d7b6c582b4a8f2593ae"
+  },
+  "docs/decisions/ADR-002-api-publica-rest.md": {
+    "mtime": 1785498807.6264286,
+    "ast_hash": "bba2eb7735829fb9c9d7991d693e4477",
+    "semantic_hash": "bba2eb7735829fb9c9d7991d693e4477"
+  },
+  "docs/decisions/ADR-003-autenticacao-do-comite.md": {
+    "mtime": 1785499205.7472103,
+    "ast_hash": "d2e8b4ea214457f88842b541db4f7d64",
+    "semantic_hash": "d2e8b4ea214457f88842b541db4f7d64"
+  },
+  "docs/decisions/ADR-004-expansao-semantica-skos.md": {
+    "mtime": 1785499395.3427956,
+    "ast_hash": "819c247bbd6560441f47710624057874",
+    "semantic_hash": "819c247bbd6560441f47710624057874"
+  },
+  "docs/decisions/ADR-005-perfil-minimo-de-publicacao.md": {
+    "mtime": 1785499900.9141312,
+    "ast_hash": "814f3b1fd8da5fbed8e5a4dc27a0a644",
+    "semantic_hash": "814f3b1fd8da5fbed8e5a4dc27a0a644"
+  },
+  "docs/governanca-e-seguranca.md": {
+    "mtime": 1785499285.5251884,
+    "ast_hash": "bd1287761445db2074bae27372a8ee83",
+    "semantic_hash": "bd1287761445db2074bae27372a8ee83"
+  },
+  "docs/modelo-de-dados.md": {
+    "mtime": 1785499131.6372514,
+    "ast_hash": "736a012e95d8733f7c8882dab226697d",
+    "semantic_hash": "736a012e95d8733f7c8882dab226697d"
+  },
+  "docs/operacao.md": {
+    "mtime": 1785499819.1190984,
+    "ast_hash": "84e7a584ab8acb1652152aa30d19adef",
+    "semantic_hash": "84e7a584ab8acb1652152aa30d19adef"
+  },
+  "docs/principios.md": {
+    "mtime": 1785497370.6463892,
+    "ast_hash": "37522ebdab4ac63be1bee8ec2fb86545",
+    "semantic_hash": "37522ebdab4ac63be1bee8ec2fb86545"
+  },
+  "docs/roadmap.md": {
+    "mtime": 1785499855.412364,
+    "ast_hash": "ad403fbbd2479af6a8e49e3f1573e1da",
+    "semantic_hash": "ad403fbbd2479af6a8e49e3f1573e1da"
+  }
+}

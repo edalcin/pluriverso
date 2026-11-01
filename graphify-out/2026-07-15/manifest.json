@@ -1,0 +1,17 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1782483197.9675424,
+    "ast_hash": "7bf81dca0376bde3a32244b82bc7cbc0",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1783774892.857815,
+    "ast_hash": "91fb39576d5453700c7e8c92c70d5e49",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1783775141.2365272,
+    "ast_hash": "b35ae12fdd41fe28ec5a940597d2f0bc",
+    "semantic_hash": ""
+  }
+}

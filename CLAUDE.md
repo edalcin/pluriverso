@@ -1,16 +1,18 @@
-## graphify
+# Pluriverso
 
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+Repositório **só de documentação**: proposta do índice federado (Harvest e Envio) da federação BioCultural. Sem código, sem stack definida; não introduza tecnologia nem arquivos de build.
 
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- Fonte de verdade da arquitetura: repositório `Arquitetura-BioCultural` (README, `docs/tecnico/`, ADRs, `docs/tecnico/CONTEXT.md`). Linke em vez de copiar; não edite aquele repositório a partir daqui.
+- Escreva em português, com a linguagem ubíqua da federação (Unidade Federada, Harvest, Envio, Custódia Local, Comitê Federado, Regime Enunciativo, Label, Notice).
+- Diagramas: apenas Mermaid.
+- Estado e pendências: `docs/proximosPassos.md`.
 
-## Arquitetura v3.3 — Persistência e Topologia
-Persistência do Pluriverso = SQLite embutida via `better-sqlite3` (JSON1 + FTS5, WAL), arquivo único externo
-ao container via `SQLITE_DB_PATH` (default `/data/pluriverso.sqlite`). Ref.: ADR-008.
-Pluriverso é instanciável (não singleton): associação pode rodar instância própria, escopada aos seus
-membros, sem hierarquia entre instâncias. Ref.: ADR-009.
-Ref. gerais: Arquitetura-BioCultural/docs/tecnico/architecture-decisions/ADR-005, ADR-008, ADR-009.
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues, managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout (`CONTEXT.md` + `docs/adr/` at the repo root). See `docs/agents/domain.md`.

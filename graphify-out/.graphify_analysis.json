@@ -1,0 +1,220 @@
+{
+  "communities": {
+    "0": [
+      "better_sqlite3",
+      "committee_auth_middleware",
+      "docs_api_openapi",
+      "docs_decisions_adr_001_stack_e_framework",
+      "docs_decisions_adr_002_api_publica_rest",
+      "docs_decisions_adr_003_autenticacao_do_comite",
+      "docs_decisions_adr_005_perfil_minimo_de_publicacao",
+      "express_js"
+    ],
+    "1": [
+      "docs_api",
+      "docs_arquitetura",
+      "pluriverso_committee_api",
+      "pluriverso_harvest_scheduler",
+      "pluriverso_membership_service",
+      "pluriverso_probe_service",
+      "pluriverso_public_api"
+    ],
+    "2": [
+      "arquitetura_biocultural",
+      "biocult_db",
+      "biocult_termos",
+      "readme_md"
+    ],
+    "3": [
+      "docs_modelo_de_dados",
+      "pluriverso_harvest_client",
+      "pluriverso_record_indexer",
+      "sqlite_db"
+    ],
+    "4": [
+      "docs_busca_semantica",
+      "pluriverso_search_service",
+      "pluriverso_semantic_expander"
+    ],
+    "5": [
+      "docs_decisions_adr_004_expansao_semantica_skos",
+      "skos_semantic_expansion"
+    ],
+    "6": [
+      "pluriverso_audit_service",
+      "pluriverso_purge_service"
+    ],
+    "7": [
+      "claude_md"
+    ],
+    "8": [
+      "docs_contrato_harvest"
+    ],
+    "9": [
+      "docs_governanca_e_seguranca"
+    ],
+    "10": [
+      "docs_operacao"
+    ],
+    "11": [
+      "docs_principios"
+    ],
+    "12": [
+      "docs_roadmap"
+    ],
+    "13": [
+      "pluriverso_mapping_service"
+    ],
+    "14": [
+      "pluriverso_web_ui"
+    ]
+  },
+  "cohesion": {
+    "0": 0.25,
+    "1": 0.3333333333333333,
+    "2": 0.5,
+    "3": 0.5,
+    "4": 1.0,
+    "5": 1.0,
+    "6": 1.0,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0
+  },
+  "gods": [
+    {
+      "id": "docs_arquitetura",
+      "label": "Arquitetura do Pluriverso (C4)",
+      "degree": 4
+    },
+    {
+      "id": "pluriverso_search_service",
+      "label": "SearchService",
+      "degree": 4
+    },
+    {
+      "id": "pluriverso_public_api",
+      "label": "PublicApi",
+      "degree": 3
+    },
+    {
+      "id": "pluriverso_committee_api",
+      "label": "CommitteeApi",
+      "degree": 3
+    },
+    {
+      "id": "docs_decisions_adr_001_stack_e_framework",
+      "label": "ADR-001: Stack e Framework",
+      "degree": 3
+    },
+    {
+      "id": "docs_decisions_adr_002_api_publica_rest",
+      "label": "ADR-002: API Pública REST",
+      "degree": 3
+    },
+    {
+      "id": "docs_api",
+      "label": "API do Pluriverso",
+      "degree": 2
+    },
+    {
+      "id": "docs_busca_semantica",
+      "label": "Busca Semântica",
+      "degree": 2
+    },
+    {
+      "id": "pluriverso_harvest_scheduler",
+      "label": "HarvestScheduler",
+      "degree": 2
+    },
+    {
+      "id": "pluriverso_harvest_client",
+      "label": "HarvestClient",
+      "degree": 2
+    }
+  ],
+  "surprises": [
+    {
+      "source": "API do Pluriverso",
+      "target": "CommitteeApi",
+      "source_files": [
+        "docs/api.md",
+        "docs/arquitetura.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "API do Pluriverso",
+      "target": "PublicApi",
+      "source_files": [
+        "docs/api.md",
+        "docs/arquitetura.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "RecordIndexer",
+      "target": "SQLite (better-sqlite3)",
+      "source_files": [
+        "docs/arquitetura.md",
+        "docs/modelo-de-dados.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "ADR-005: Perfil Mínimo de Publicação",
+      "target": "OpenAPI Specification",
+      "source_files": [
+        "docs/decisions/ADR-005-perfil-minimo-de-publicacao.md",
+        "docs/api/openapi.yaml"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source"
+    },
+    {
+      "source": "Busca Semântica",
+      "target": "SearchService",
+      "source_files": [
+        "docs/busca-semantica.md",
+        "docs/arquitetura.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `Arquitetura do Pluriverso (C4)` connect `Arquitetura do Pluriverso (C4)` to `SearchService`?",
+      "why": "High betweenness centrality (0.076) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `HarvestScheduler` connect `Arquitetura do Pluriverso (C4)` to `HarvestClient`?",
+      "why": "High betweenness centrality (0.054) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `HarvestClient` connect `HarvestClient` to `Arquitetura do Pluriverso (C4)`?",
+      "why": "High betweenness centrality (0.045) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Contrato de Harvest`, `Governança e Segurança`, `Modelo de Dados` to the rest of the system?",
+      "why": "20 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}
